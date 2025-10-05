@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/modules/user/views/address_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, String> address;
@@ -28,30 +29,59 @@ class _PaymentScreenState extends State<PaymentScreen> {
         widget.subtotal + widget.deliveryFee + widget.serviceFee;
 
     return Scaffold(
-      backgroundColor: const Color(0XFFC4D0C0),
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: const Color(0XFFC4D0C0),
-        title: const Text("Payment Method"),
+        backgroundColor: Colors.white,
+
         centerTitle: true,
+        title: Text(
+          "Payment Method",
+          style: GoogleFonts.inter(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: const Color(0XFF476C2F),
+          ),
+        ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0XFF476C2F),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ),
+        ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 30, right: 20, bottom: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            SizedBox(height: 30),
             // Address
             Text(
               "Delivery Address",
               style: GoogleFonts.inter(
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
+                color: Color(0XFF3F6B22),
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
             Container(
+              width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.white,
+                border: Border.all(color: Color(0xFF456B2E).withOpacity(0.53)),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Text(
@@ -61,14 +91,40 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 style: GoogleFonts.inter(fontSize: 14, color: Colors.black87),
               ),
             ),
-            const SizedBox(height: 20),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: TextButton(
+                style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => AddressScreen(
+                        subtotal: widget.subtotal,
+                        deliveryFee: widget.deliveryFee,
+                        serviceFee: widget.serviceFee,
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  "Change Address",
+                  style: GoogleFonts.inter(
+                    color: Color(0XFF456B2E),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
 
-            // Payment Options
             Text(
-              "Select Payment Method",
+              "Pay With",
               style: GoogleFonts.inter(
                 fontSize: 16,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
+                color: Color(0XFF3F6B22),
               ),
             ),
             RadioListTile(

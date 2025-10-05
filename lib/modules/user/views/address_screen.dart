@@ -34,7 +34,14 @@ class _AddressScreenState extends State<AddressScreen> {
       appBar: AppBar(
         backgroundColor: const Color(0XFFC4D0C0),
         centerTitle: true,
-        title: const Text("Add Address"),
+        title: Text(
+          "Address Details",
+          style: GoogleFonts.inter(
+            fontSize: 20,
+            fontWeight: FontWeight.w600,
+            color: const Color(0XFF476C2F),
+          ),
+        ),
         leading: Padding(
           padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
           child: Container(
@@ -69,12 +76,12 @@ class _AddressScreenState extends State<AddressScreen> {
                 phoneController,
                 keyboardType: TextInputType.phone,
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 70),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0XFF456B2E),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius: BorderRadius.circular(15),
                   ),
                   padding: const EdgeInsets.symmetric(
                     vertical: 14,
@@ -105,7 +112,11 @@ class _AddressScreenState extends State<AddressScreen> {
                 },
                 child: Text(
                   "Save Address",
-                  style: GoogleFonts.inter(color: Colors.white, fontSize: 16),
+                  style: GoogleFonts.inter(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
               ),
             ],
@@ -129,7 +140,26 @@ class _AddressScreenState extends State<AddressScreen> {
             value == null || value.isEmpty ? "Enter $label" : null,
         decoration: InputDecoration(
           labelText: label,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+          labelStyle: GoogleFonts.inter(
+            color: const Color(0XFF39571E).withOpacity(0.8),
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+          ),
+          border: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: const Color(0XFF3B6C1E).withOpacity(0.6),
+            ),
+          ),
+          focusedBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: const Color(0XFF3B6C1E).withOpacity(0.6),
+            ),
+          ),
+          enabledBorder: UnderlineInputBorder(
+            borderSide: BorderSide(
+              color: const Color(0XFF3B6C1E).withOpacity(0.6),
+            ),
+          ),
         ),
       ),
     );
