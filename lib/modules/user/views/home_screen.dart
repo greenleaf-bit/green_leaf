@@ -109,7 +109,7 @@ class HomeScreen extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          padding: EdgeInsets.all(4),
+                          padding: EdgeInsets.all(5),
                           width: 155,
                           height: 163,
                           decoration: BoxDecoration(

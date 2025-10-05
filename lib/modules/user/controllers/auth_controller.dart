@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_leaf/main_screen.dart';
 import 'package:green_leaf/modules/admin/views/admin_home_screen.dart';
 import 'package:green_leaf/modules/user/models/user_model.dart';
 import 'package:green_leaf/modules/user/views/home_screen.dart';
@@ -107,7 +108,7 @@ class AuthController {
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HomeScreen()),
+          MaterialPageRoute(builder: (context) => CustomBottomBar()),
         );
       }
     } on FirebaseAuthException catch (e) {

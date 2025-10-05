@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/modules/user/controllers/cart_controller.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final String productId;
@@ -17,6 +18,7 @@ class ProductDetailScreen extends StatefulWidget {
 
 class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int quantity = 1;
+  final CartController _cartController = CartController();
 
   @override
   Widget build(BuildContext context) {
@@ -191,8 +193,11 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           ),
                         ),
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Added to cart")),
+                          _cartController.addToCart(
+                            productId: widget.productId,
+                            productData: data,
+                            quantity: quantity,
+                            context: context,
                           );
                         },
                         child: Text(
