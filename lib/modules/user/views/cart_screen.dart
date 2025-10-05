@@ -188,6 +188,13 @@ class CartScreen extends StatelessWidget {
                                       subtotal: subtotal,
                                       deliveryFee: deliveryFee,
                                       serviceFee: serviceFee,
+                                      cartItems: cartDocs
+                                          .map(
+                                            (doc) =>
+                                                doc.data()
+                                                    as Map<String, dynamic>,
+                                          )
+                                          .toList(),
                                     );
                                   },
                                 ),

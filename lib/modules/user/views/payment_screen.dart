@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/modules/user/controllers/order_controller.dart';
 import 'package:green_leaf/modules/user/views/address_screen.dart';
+import 'package:green_leaf/modules/user/views/card_details.dart';
+import 'package:green_leaf/modules/user/views/feedback_screen.dart';
+import 'package:green_leaf/modules/user/views/order_screen.dart';
+import 'package:green_leaf/modules/user/views/payment_option.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Map<String, String> address;
   final double subtotal;
   final double deliveryFee;
   final double serviceFee;
+  final List<Map<String, dynamic>> cartItems;
 
   const PaymentScreen({
     super.key,
@@ -14,6 +20,7 @@ class PaymentScreen extends StatefulWidget {
     required this.subtotal,
     required this.deliveryFee,
     required this.serviceFee,
+    required this.cartItems,
   });
 
   @override
@@ -21,7 +28,8 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  String paymentMethod = "Cash on Delivery";
+  String paymentMethod = "";
+  Map<String, String>? cardData;
 
   @override
   Widget build(BuildContext context) {
@@ -96,16 +104,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               child: TextButton(
                 style: TextButton.styleFrom(padding: EdgeInsets.zero),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AddressScreen(
-                        subtotal: widget.subtotal,
-                        deliveryFee: widget.deliveryFee,
-                        serviceFee: widget.serviceFee,
-                      ),
-                    ),
-                  );
+                  Navigator.pop(context);
                 },
                 child: Text(
                   "Change Address",
@@ -127,48 +126,198 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 color: Color(0XFF3F6B22),
               ),
             ),
-            RadioListTile(
-              title: const Text("Cash on Delivery"),
-              value: "Cash on Delivery",
-              groupValue: paymentMethod,
-              onChanged: (val) {
-                setState(() => paymentMethod = val!);
-              },
-            ),
-            RadioListTile(
-              title: const Text("Card Payment"),
+
+            const SizedBox(height: 10),
+            PaymentOption(
               value: "Card Payment",
               groupValue: paymentMethod,
+              text: cardData == null
+                  ? "Add Card Data"
+                  : cardData!["number"] ?? "",
+              iconPath: "assets/icons/visa_icon.png",
+              onChanged: (val) async {
+                final result = await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const CardDetails()),
+                );
+                if (result != null) {
+                  setState(() {
+                    paymentMethod = "Card Payment";
+                    cardData = Map<String, String>.from(result);
+                  });
+                }
+              },
+            ),
+
+            const SizedBox(height: 10),
+            PaymentOption(
+              value: "Cash on Delivery",
+              groupValue: paymentMethod,
+              text: "Cash On Delivery",
+              iconPath: "assets/icons/deliver_icon.png",
               onChanged: (val) {
                 setState(() => paymentMethod = val!);
               },
             ),
-
             const Spacer(),
 
-            // Payment Summary
             Container(
-              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(
+                    "Payment Summary",
+                    style: GoogleFonts.inter(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0XFF476C2F),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
                   summaryRow("Subtotal", widget.subtotal),
                   summaryRow("Delivery Fee", widget.deliveryFee),
                   summaryRow("Service Fee", widget.serviceFee),
-                  const Divider(),
+                  const Divider(thickness: 1, color: Color(0XFF9D9D9D)),
                   summaryRow("Total Amount", totalAmount, bold: true),
                   const SizedBox(height: 12),
                   ElevatedButton(
-                    onPressed: () {
-                      // Proceed Order Logic Here
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Order placed with $paymentMethod"),
-                        ),
-                      );
+                    onPressed: () async {
+                      if (paymentMethod.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("Please select a payment method"),
+                          ),
+                        );
+                        return;
+                      }
+
+                      try {
+                        final orderController = OrderController();
+
+                        // ✅ Order place call
+                        await orderController.placeOrder(
+                          address: widget.address,
+                          paymentMethod: paymentMethod,
+                          cardData: cardData,
+                          subtotal: widget.subtotal,
+                          deliveryFee: widget.deliveryFee,
+                          serviceFee: widget.serviceFee,
+                          totalAmount:
+                              widget.subtotal +
+                              widget.deliveryFee +
+                              widget.serviceFee,
+                          cartItems: widget.cartItems,
+                        );
+
+                        // ✅ Custom Success Dialog
+                        showDialog(
+                          context: context,
+                          barrierDismissible:
+                              false, // dialog bahar tap karne se close na ho
+                          builder: (context) {
+                            return Dialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(50),
+                              ),
+                              child: Container(
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(50),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Color(0XFF5C8B40),
+                                      size: 60,
+                                    ),
+                                    const SizedBox(height: 15),
+                                    Text(
+                                      "Order Successfully Placed!",
+                                      style: GoogleFonts.inter(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0XFF476C2F),
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      "Your payment was successfully!\nJust wait GreenLeaf arrive at\n home asap..",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.grey[700]),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: const Color(
+                                          0XFF476C2F,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            50,
+                                          ),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                          horizontal: 30,
+                                        ),
+                                      ),
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const FeedBackScreen(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Give Feedback",
+                                        style: GoogleFonts.inter(
+                                          color: Colors.white,
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                const OrderScreen(),
+                                          ),
+                                        );
+                                      },
+                                      child: Text(
+                                        "Go to Orders",
+                                        style: GoogleFonts.inter(
+                                          color: const Color(0XFF476C2F),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(SnackBar(content: Text("Error: $e")));
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0XFF456B2E),
@@ -204,14 +353,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
         children: [
           Text(
             label,
-            style: TextStyle(
-              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+              color: const Color(0XFF476C2F),
             ),
           ),
           Text(
             "${value.toStringAsFixed(3)} OMR",
-            style: TextStyle(
-              fontWeight: bold ? FontWeight.bold : FontWeight.normal,
+            style: GoogleFonts.inter(
+              fontWeight: FontWeight.w500,
+              fontSize: 15,
+              color: const Color(0XFF476C2F),
             ),
           ),
         ],

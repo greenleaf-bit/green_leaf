@@ -6,12 +6,14 @@ class AddressScreen extends StatefulWidget {
   final double subtotal;
   final double deliveryFee;
   final double serviceFee;
+  final List<Map<String, dynamic>> cartItems;
 
   const AddressScreen({
     super.key,
     required this.subtotal,
     required this.deliveryFee,
     required this.serviceFee,
+    required this.cartItems,
   });
 
   @override
@@ -101,6 +103,7 @@ class _AddressScreenState extends State<AddressScreen> {
                       context,
                       MaterialPageRoute(
                         builder: (_) => PaymentScreen(
+                          cartItems: widget.cartItems,
                           subtotal: widget.subtotal,
                           deliveryFee: widget.deliveryFee,
                           serviceFee: widget.serviceFee,
