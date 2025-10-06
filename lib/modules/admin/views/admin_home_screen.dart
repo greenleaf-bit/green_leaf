@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/modules/admin/views/manage_orders.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -101,7 +102,14 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ManageOrderScreen(),
+                      ),
+                    );
+                  },
                   child: Container(
                     height: 160,
                     width: 155,
