@@ -198,7 +198,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       try {
                         final orderController = OrderController();
 
-                        // ✅ Order place call
                         await orderController.placeOrder(
                           address: widget.address,
                           paymentMethod: paymentMethod,
@@ -213,11 +212,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           cartItems: widget.cartItems,
                         );
 
-                        // ✅ Custom Success Dialog
                         showDialog(
                           context: context,
-                          barrierDismissible:
-                              false, // dialog bahar tap karne se close na ho
+                          barrierDismissible: false,
                           builder: (context) {
                             return Dialog(
                               shape: RoundedRectangleBorder(
@@ -270,12 +267,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         ),
                                       ),
                                       onPressed: () {
-                                        Navigator.pushReplacement(
+                                        Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 const FeedBackScreen(),
                                           ),
+                                          (route) => false,
                                         );
                                       },
                                       child: Text(
@@ -290,12 +288,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                     const SizedBox(height: 10),
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pushReplacement(
+                                        Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 const OrderScreen(),
                                           ),
+                                          (route) => false,
                                         );
                                       },
                                       child: Text(

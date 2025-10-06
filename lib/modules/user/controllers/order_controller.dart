@@ -20,6 +20,8 @@ class OrderController {
     if (user == null) throw Exception("User not logged in");
 
     final orderData = {
+      "localCreatedAt": DateTime.now(),
+
       "userId": user.uid,
       "createdAt": FieldValue.serverTimestamp(),
       "address": address,
@@ -30,7 +32,7 @@ class OrderController {
       "serviceFee": serviceFee,
       "totalAmount": totalAmount,
       "items": cartItems,
-      "status": "Pending", // later update to Processing/Delivered
+      "status": "Pending",
     };
 
     await _firestore.collection("orders").add(orderData);
@@ -44,5 +46,19 @@ class OrderController {
     for (var doc in cartSnapshot.docs) {
       await doc.reference.delete();
     }
+  }
+
+  //get order by user id
+  Stream<QuerySnapshot> getUserOrders() {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception("User not logged in");
+    }
+
+    return _firestore
+        .collection("orders")
+        .where("userId", isEqualTo: user.uid)
+        .orderBy("localCreatedAt", descending: true)
+        .snapshots();
   }
 }
