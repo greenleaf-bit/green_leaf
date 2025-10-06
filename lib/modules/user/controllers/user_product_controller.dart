@@ -7,4 +7,17 @@ class UserProductController {
   Stream<QuerySnapshot> getProducts() {
     return _firestore.collection("products").snapshots();
   }
+
+  Stream<QuerySnapshot> getProductsBySearch({String? search}) {
+    if (search == null || search.isEmpty) {
+      return _firestore.collection("products").snapshots();
+    }
+
+    // Search ke hisaab se filter karo
+    return _firestore
+        .collection("products")
+        .where("name", isGreaterThanOrEqualTo: search)
+        .where("name", isLessThanOrEqualTo: search + '\uf8ff')
+        .snapshots();
+  }
 }

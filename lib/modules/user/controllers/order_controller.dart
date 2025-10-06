@@ -4,8 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class OrderController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future<void> placeOrder({
+  Future<String> placeOrder({
     required Map<String, String> address,
     required String paymentMethod,
     Map<String, String>? cardData,
@@ -21,7 +20,6 @@ class OrderController {
 
     final orderData = {
       "localCreatedAt": DateTime.now(),
-
       "userId": user.uid,
       "createdAt": FieldValue.serverTimestamp(),
       "address": address,
@@ -33,11 +31,13 @@ class OrderController {
       "totalAmount": totalAmount,
       "items": cartItems,
       "status": "Pending",
+      "feedbacks": [],
     };
 
-    await _firestore.collection("orders").add(orderData);
+    // 🔹 yahan reference le lo
+    final docRef = await _firestore.collection("orders").add(orderData);
 
-    // Optionally clear cart after placing order
+    // Clear cart after placing order
     final cartRef = _firestore
         .collection("carts")
         .doc(user.uid)
@@ -46,6 +46,8 @@ class OrderController {
     for (var doc in cartSnapshot.docs) {
       await doc.reference.delete();
     }
+
+    return docRef.id; // 🔹 ye return karega orderId
   }
 
   //get order by user id
@@ -60,5 +62,19 @@ class OrderController {
         .where("userId", isEqualTo: user.uid)
         .orderBy("localCreatedAt", descending: true)
         .snapshots();
+  }
+
+  //save Feedback
+  Future<void> saveFeedback({
+    required String orderId,
+    required List<Map<String, dynamic>> feedbacks,
+  }) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception("User not logged in");
+
+    // order document me feedbacks array update kar do
+    await _firestore.collection("orders").doc(orderId).update({
+      "feedbacks": FieldValue.arrayUnion(feedbacks),
+    });
   }
 }

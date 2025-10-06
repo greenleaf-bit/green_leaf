@@ -198,7 +198,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       try {
                         final orderController = OrderController();
 
-                        await orderController.placeOrder(
+                        final orderId = await orderController.placeOrder(
                           address: widget.address,
                           paymentMethod: paymentMethod,
                           cardData: cardData,
@@ -271,7 +271,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
-                                                const FeedBackScreen(),
+                                                FeedBackScreen(
+                                                  orderId: orderId,
+                                                  cartItems: widget.cartItems,
+                                                ),
                                           ),
                                           (route) => false,
                                         );

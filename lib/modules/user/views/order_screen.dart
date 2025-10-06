@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/main_screen.dart';
 import 'package:intl/intl.dart';
 import '../controllers/order_controller.dart';
 
@@ -14,6 +15,8 @@ class OrderScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        centerTitle: true,
         title: Text(
           "Orders",
           style: GoogleFonts.inter(
@@ -22,9 +25,27 @@ class OrderScreen extends StatelessWidget {
             color: const Color(0XFF476C2F),
           ),
         ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 10, top: 5, bottom: 5),
+          child: Container(
+            decoration: const BoxDecoration(
+              color: Color(0XFF476C2F),
+              shape: BoxShape.circle,
+            ),
+            child: IconButton(
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
+                color: Colors.white,
+                size: 18,
+              ),
+              onPressed: () => Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (ctx) => CustomBottomBar()),
+                (route) => false,
+              ),
+            ),
+          ),
+        ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: orderController.getUserOrders(),
