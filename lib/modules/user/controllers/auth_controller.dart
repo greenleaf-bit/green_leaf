@@ -38,6 +38,7 @@ class AuthController {
         fullname: fullname,
         email: email,
         role: role,
+        address: null,
       );
 
       // Save in Firestore
@@ -115,6 +116,134 @@ class AuthController {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Login Failed: ${e.message}")));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
+  //update address
+  Future<void> updateAddress(String newAddress) async {
+    try {
+      final user = _auth.currentUser;
+      if (user != null) {
+        await _firestore.collection("users").doc(user.uid).update({
+          "address": newAddress,
+        });
+      }
+    } catch (e) {
+      throw Exception("Failed to update address: $e");
+    }
+  }
+
+  Future<String?> getUserAddress() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      final doc = await _firestore.collection("users").doc(user.uid).get();
+      return doc.data()?["address"];
+    }
+    return null;
+  }
+
+  //Change Email
+  Future<void> changeEmail({
+    required String newEmail,
+    required BuildContext context,
+  }) async {
+    final user = _auth.currentUser;
+
+    if (user == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("No user logged in")));
+      return;
+    }
+
+    try {
+      await user.verifyBeforeUpdateEmail(newEmail);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "Verification email sent to $newEmail. Please check your inbox.",
+          ),
+        ),
+      );
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: ${e.message}")));
+    }
+  }
+
+  // Change Password
+  Future<void> changePassword({
+    required String currentPassword,
+    required String newPassword,
+    required BuildContext context,
+  }) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null) throw "User not logged in";
+
+      // Reauthenticate user
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      // Update password
+      await user.updatePassword(newPassword);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password updated successfully")),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = "Error: ${e.message}";
+      if (e.code == 'wrong-password') {
+        message = "Current password is incorrect";
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+    }
+  }
+
+  // Delete user account
+  Future<void> deleteAccount(BuildContext context) async {
+    final user = _auth.currentUser;
+
+    if (user == null) return;
+
+    try {
+      // Delete user document from Firestore
+      await _firestore.collection("users").doc(user.uid).delete();
+
+      // Delete user from Firebase Auth
+      await user.delete();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Account deleted successfully")),
+      );
+
+      // Navigate to login screen after deletion
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => LoginScreen()),
+        (route) => false,
+      );
+    } on FirebaseAuthException catch (e) {
+      // Handle errors like recent login required
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Failed to delete account: ${e.message}")),
+      );
     } catch (e) {
       ScaffoldMessenger.of(
         context,

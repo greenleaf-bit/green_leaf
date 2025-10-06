@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/user/views/help_center_screen.dart';
+import 'package:green_leaf/modules/user/views/setting_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -28,7 +29,16 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 Spacer(),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) {
+                          return SettingScreen();
+                        },
+                      ),
+                    );
+                  },
                   icon: Icon(Icons.settings_outlined, size: 33),
                 ),
               ],
