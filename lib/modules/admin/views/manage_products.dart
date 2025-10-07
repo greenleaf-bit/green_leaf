@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:green_leaf/modules/admin/controllers/product_controller.dart';
 import 'package:green_leaf/modules/admin/views/add_product.dart';
 import 'package:green_leaf/modules/admin/views/update_product_screen.dart';
+import 'package:green_leaf/modules/user/views/login_screen.dart';
 
 class ManageProducts extends StatefulWidget {
   const ManageProducts({super.key});
@@ -53,7 +54,17 @@ class _ManageProductsState extends State<ManageProducts> {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) {
+                          return LoginScreen();
+                        },
+                      ),
+                      (route) => false,
+                    );
+                  },
                   child: Text(
                     "Logout",
                     style: GoogleFonts.lexend(

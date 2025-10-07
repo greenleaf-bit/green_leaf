@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/core/utils/custom_textfield.dart';
 import 'package:green_leaf/modules/user/controllers/auth_controller.dart';
 import 'package:green_leaf/modules/user/views/forgot_password_screen.dart';
+import 'package:green_leaf/modules/user/views/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -120,9 +121,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ),
+                Image.asset(
+                  "assets/images/login_image.png",
+                  width: 190,
+                  height: 190,
+                ),
                 SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
                   child: SizedBox(
                     height: 54,
                     child: ElevatedButton(
@@ -149,6 +155,38 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
+                ),
+                SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Don’t have an account? ",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xFF999999),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RegisterScreen(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        "Sign up",
+                        style: GoogleFonts.inter(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF39571E),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

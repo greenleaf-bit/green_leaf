@@ -36,7 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         isLoading = false;
       });
     } else {
-      return; // Form is not valid, do not proceed
+      return;
     }
     setState(() {
       isLoading = true;
@@ -48,8 +48,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() {
       isLoading = false;
     });
-
-    // After registration logic, you can navigate or show a success message
   }
 
   @override
@@ -62,7 +60,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 180),
+                SizedBox(height: 130),
                 Text(
                   'Register',
                   style: GoogleFonts.inter(
@@ -100,6 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 20),
                 CustomTextField(
                   controller: emailController,
                   hintText: "Email",
@@ -119,6 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+                SizedBox(height: 20),
                 CustomTextField(
                   controller: passwordController,
                   hintText: "Password",
@@ -138,6 +138,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     _password = value;
                   },
                 ),
+                SizedBox(height: 20),
                 CustomTextField(
                   controller: _confirmPasswordController,
                   hintText: "Confirm Password",
@@ -153,9 +154,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     return null;
                   },
                 ),
+
                 SizedBox(height: 20),
                 Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: const EdgeInsets.only(left: 40, right: 40),
+                  child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      children: <TextSpan>[
+                        TextSpan(
+                          text: 'By signing up, you agree to our ',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFF999999),
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'term of use and privacy notice ',
+                          style: GoogleFonts.inter(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Color(0xFF39571E),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 10),
+                Image.asset(
+                  "assets/images/register_image.png",
+                  width: 108,
+                  height: 108,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
                   child: SizedBox(
                     height: 54,
                     child: ElevatedButton(
@@ -183,7 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 12),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

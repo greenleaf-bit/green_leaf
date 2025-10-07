@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/admin/views/manage_orders.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
+import 'package:green_leaf/modules/user/views/login_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -32,7 +33,17 @@ class AdminHomeScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (ctx) {
+                          return LoginScreen();
+                        },
+                      ),
+                      (route) => false,
+                    );
+                  },
                   child: Text(
                     "Logout",
                     style: GoogleFonts.lexend(

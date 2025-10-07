@@ -53,11 +53,14 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      extendBody: true,
       body: _screens[_selectedIndex],
 
       floatingActionButton: Container(
-        height: 70,
-        width: 70,
+        margin: EdgeInsets.only(top: 30),
+        height: 50,
+        width: 50,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: LinearGradient(
@@ -85,11 +88,23 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       bottomNavigationBar: BottomAppBar(
-        color: Color(0xFFC4D0C0),
+        color: Colors.transparent,
         notchMargin: 8.0,
         child: Container(
           height: 65,
           decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                offset: Offset(0, -1),
+              ),
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 10,
+                offset: Offset(0, 1),
+              ),
+            ],
             color: Colors.white,
             borderRadius: BorderRadius.circular(50.0),
           ),

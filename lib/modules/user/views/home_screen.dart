@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/user/controllers/user_product_controller.dart';
@@ -14,6 +15,29 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final UserProductController _productController = UserProductController();
   String searchQuery = "";
+  String userName = ""; // <-- yahan store hoga firebase se name
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserName();
+  }
+
+  void fetchUserName() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .get();
+
+      if (doc.exists) {
+        setState(() {
+          userName = doc["fullname"] ?? "User";
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     height: 80,
                   ),
                   Text(
-                    "Hey Mutasim",
+                    "Hey $userName",
                     style: GoogleFonts.lexend(
                       fontSize: 19,
                       fontWeight: FontWeight.w500,

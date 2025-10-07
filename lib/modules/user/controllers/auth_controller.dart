@@ -97,9 +97,12 @@ class AuthController {
 
       String role = userDoc["role"];
 
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Login Successful")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Login Successful"),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
 
       if (role == "admin") {
         Navigator.pushReplacement(

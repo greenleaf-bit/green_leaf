@@ -4,6 +4,7 @@ import 'package:green_leaf/modules/user/controllers/order_controller.dart';
 import 'package:green_leaf/modules/user/views/address_screen.dart';
 import 'package:green_leaf/modules/user/views/card_details.dart';
 import 'package:green_leaf/modules/user/views/feedback_screen.dart';
+import 'package:green_leaf/modules/user/views/map_widget.dart';
 import 'package:green_leaf/modules/user/views/order_screen.dart';
 import 'package:green_leaf/modules/user/views/payment_option.dart';
 
@@ -74,6 +75,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 30),
+            Container(
+              width: double.infinity,
+              height: 100,
+              decoration: BoxDecoration(
+                color: const Color(0XFFF5F5F5),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: Color(0xFF456B2E).withOpacity(0.53)),
+              ),
+              child: MapBoxMapWidget(),
+            ),
             // Address
             Text(
               "Delivery Address",

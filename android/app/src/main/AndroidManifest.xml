@@ -1,4 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:label="green_leaf"
         android:name="${applicationName}"
@@ -20,6 +25,9 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
+               <meta-data
+            android:name="com.mapbox.token"
+            android:value="pk.eyJ1Ijoic2hvYWlia2hhamEiLCJhIjoiY21nZzl5MmJxMGc5NzJ3cjB2cHN1MW1tOCJ9.r7JBap3LIceAMTirrSsiKw" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
