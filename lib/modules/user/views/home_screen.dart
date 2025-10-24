@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/user/controllers/user_product_controller.dart';
 import 'package:green_leaf/modules/user/views/product_detail.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,14 +16,56 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final UserProductController _productController = UserProductController();
+  final TextEditingController _controller = TextEditingController();
+
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
   String searchQuery = "";
   String userName = ""; // <-- yahan store hoga firebase se name
 
   @override
   void initState() {
     super.initState();
+    _speech = stt.SpeechToText();
+
     fetchUserName();
   }
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) {
+          debugPrint('Status: $val');
+          // 🟢 Listen start hua to mic red
+          if (val == 'listening') {
+            setState(() => _isListening = true);
+          }
+          // 🔴 Stop hone pe mic grey
+          else if (val == 'notListening' || val == 'done') {
+            setState(() => _isListening = false);
+          }
+        },
+        onError: (val) {
+          debugPrint('Error: $val');
+          setState(() => _isListening = false);
+        },
+      );
+
+      if (available) {
+        _speech.listen(
+          onResult: (val) {
+            setState(() {
+              _controller.text = val.recognizedWords;
+              searchQuery = val.recognizedWords;
+            });
+          },
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
+  }
+
 
   void fetchUserName() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -85,8 +129,17 @@ class _HomeScreenState extends State<HomeScreen> {
               Padding(
                 padding: const EdgeInsets.only(left: 7, right: 7),
                 child: SearchBar(
+                  controller: _controller,
                   leading: const Icon(Icons.search),
-                  hintText: "Search plants",
+                  trailing: [
+                    IconButton(
+                      icon: Icon(
+                        _isListening ? Icons.mic : Icons.mic_none,
+                        color: _isListening ? Colors.red : Colors.grey,
+                      ),
+                      onPressed: _listen,
+                    ),
+                  ],                  hintText: "Search plants",
                   hintStyle: WidgetStateProperty.all(
                     GoogleFonts.inter(
                       fontSize: 14,

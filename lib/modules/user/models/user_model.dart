@@ -3,7 +3,8 @@ class UserModel {
   final String fullname;
   final String email;
   final String role;
-  final Map<String, dynamic>? address; // null initially
+  final Map<String, dynamic>? address;
+  final int id;
 
   UserModel({
     required this.uid,
@@ -11,6 +12,7 @@ class UserModel {
     required this.email,
     required this.role,
     this.address,
+    this.id = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -19,7 +21,8 @@ class UserModel {
       "fullname": fullname,
       "email": email,
       "role": role,
-      "address": address, // null save hoga jab register karega
+      "address": address,
+      'id': id,
     };
   }
 
@@ -30,6 +33,7 @@ class UserModel {
       email: map["email"],
       role: map["role"],
       address: map["address"],
+      id: map['id'] ?? 0,
     );
   }
 }

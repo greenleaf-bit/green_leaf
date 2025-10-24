@@ -137,161 +137,164 @@ class _ManageProductsState extends State<ManageProducts> {
 
                   final products = snapshot.data!.docs;
 
-                  return GridView.builder(
-                    itemCount: products.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 2,
-                      mainAxisSpacing: 2,
-                      childAspectRatio: 0.7,
-                    ),
-                    itemBuilder: (context, index) {
-                      final doc = products[index];
-                      final data = doc.data() as Map<String, dynamic>;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 70),
+                    child: GridView.builder(
+                      itemCount: products.length,
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 2,
+                        mainAxisSpacing: 2,
+                        childAspectRatio: 0.7,
+                      ),
+                      itemBuilder: (context, index) {
+                        final doc = products[index];
+                        final data = doc.data() as Map<String, dynamic>;
 
-                      return Card(
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: data["imageUrl"] != null
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 15.0,
-                                        right: 15.0,
-                                        top: 10.0,
+                        return Card(
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: data["imageUrl"] != null
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 15.0,
+                                          right: 15.0,
+                                          top: 10.0,
+                                        ),
+                                        child: Image.network(
+                                          data["imageUrl"],
+                                          fit: BoxFit.cover,
+                                        ),
+                                      )
+                                    : Icon(
+                                        Icons.image,
+                                        size: 80,
+                                        color: Colors.grey,
                                       ),
-                                      child: Image.network(
-                                        data["imageUrl"],
-                                        fit: BoxFit.cover,
-                                      ),
-                                    )
-                                  : Icon(
-                                      Icons.image,
-                                      size: 80,
-                                      color: Colors.grey,
-                                    ),
-                            ),
-                            SizedBox(height: 5),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                right: 8.0,
                               ),
-                              child: SizedBox(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      data["name"] ?? "No Name",
-                                      style: GoogleFonts.inter(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 12,
-                                        color: Color(0xFF325A3E),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        _editProduct(doc);
-                                      },
-                                      child: Container(
-                                        width: 60,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Color(0XFF428DFF),
-                                          borderRadius: BorderRadius.circular(
-                                            50,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          "Update",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                              SizedBox(height: 5),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                  right: 8.0,
                                 ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                right: 8.0,
-                              ),
-                              child: SizedBox(
-                                height: 30,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "${data["price"] ?? 0} OMR",
-                                      style: GoogleFonts.inter(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w600,
-                                        color: Color(0xFF325A3E),
-                                      ),
-                                    ),
-                                    InkWell(
-                                      onTap: () {
-                                        _productController
-                                            .deleteProductWithConfirmation(
-                                              doc.id,
-                                              context,
-                                            );
-                                      },
-                                      child: Container(
-                                        width: 60,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 4,
+                                child: SizedBox(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        data["name"] ?? "No Name",
+                                        style: GoogleFonts.inter(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 12,
+                                          color: Color(0xFF325A3E),
                                         ),
-                                        decoration: BoxDecoration(
-                                          color: Color(0XFFC40000),
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color: Colors.black26,
-                                              blurRadius: 4,
-                                              offset: Offset(2, 2),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          _editProduct(doc);
+                                        },
+                                        child: Container(
+                                          width: 60,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Color(0XFF428DFF),
+                                            borderRadius: BorderRadius.circular(
+                                              50,
                                             ),
-                                          ],
-                                          borderRadius: BorderRadius.circular(
-                                            50,
                                           ),
-                                        ),
-                                        child: Text(
-                                          "Delete",
-                                          textAlign: TextAlign.center,
-                                          style: GoogleFonts.inter(
-                                            fontSize: 10,
-                                            fontWeight: FontWeight.w500,
-                                            color: Colors.white,
+                                          child: Text(
+                                            "Update",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                  right: 8.0,
+                                ),
+                                child: SizedBox(
+                                  height: 30,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "${data["price"] ?? 0} OMR",
+                                        style: GoogleFonts.inter(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF325A3E),
+                                        ),
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          _productController
+                                              .deleteProductWithConfirmation(
+                                                doc.id,
+                                                context,
+                                              );
+                                        },
+                                        child: Container(
+                                          width: 60,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Color(0XFFC40000),
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.black26,
+                                                blurRadius: 4,
+                                                offset: Offset(2, 2),
+                                              ),
+                                            ],
+                                            borderRadius: BorderRadius.circular(
+                                              50,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            "Delete",
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.inter(
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
                   );
                 },
               ),

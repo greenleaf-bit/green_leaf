@@ -37,11 +37,6 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
   }
-  @override
-  void initState() {
-    super.initState();
-    _tryAutoBiometricLogin();
-  }
   Future<void> _tryAutoBiometricLogin() async {
     final bioHelper = BiometricHelper();
     final isEnabled = await bioHelper.isBiometricEnabled();

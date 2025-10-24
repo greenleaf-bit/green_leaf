@@ -15,9 +15,35 @@ class _CardDetailsState extends State<CardDetails> {
   final TextEditingController expiryCtrl = TextEditingController();
   final TextEditingController cvcCtrl = TextEditingController();
 
+  bool isExpired(String input) {
+    try {
+      // Expecting format MM/YY
+      final parts = input.split('/');
+      if (parts.length != 2) return true;
+
+      final month = int.tryParse(parts[0]) ?? 0;
+      final year = int.tryParse(parts[1]) ?? 0;
+
+      if (month < 1 || month > 12) return true;
+
+      // Convert YY to 20YY
+      final expiryYear = 2000 + year;
+
+      // Compare with current date
+      final now = DateTime.now();
+      final expiryDate = DateTime(expiryYear, month + 1, 0);
+
+      // ✅ expired if expiryDate < today
+      return expiryDate.isBefore(now);
+    } catch (_) {
+      return true;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: Text(
@@ -50,7 +76,7 @@ class _CardDetailsState extends State<CardDetails> {
                 decoration: const InputDecoration(labelText: "Card Number"),
                 keyboardType: TextInputType.number,
                 validator: (val) =>
-                    val!.length < 16 ? "Enter valid number" : null,
+                val!.length < 16 ? "Enter valid number" : null,
               ),
               Row(
                 children: [
@@ -60,7 +86,14 @@ class _CardDetailsState extends State<CardDetails> {
                       decoration: const InputDecoration(
                         labelText: "Expiry (MM/YY)",
                       ),
-                      validator: (val) => val!.isEmpty ? "Enter expiry" : null,
+                      validator: (val) {
+                        if (val == null || val.isEmpty) {
+                          return "Enter expiry";
+                        } else if (isExpired(val.trim())) {
+                          return "Card expired";
+                        }
+                        return null;
+                      },
                     ),
                   ),
                   const SizedBox(width: 10),
@@ -70,7 +103,7 @@ class _CardDetailsState extends State<CardDetails> {
                       decoration: const InputDecoration(labelText: "CVC"),
                       keyboardType: TextInputType.number,
                       validator: (val) =>
-                          val!.length < 3 ? "Enter valid CVC" : null,
+                      val!.length < 3 ? "Enter valid CVC" : null,
                     ),
                   ),
                 ],

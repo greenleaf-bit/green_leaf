@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:green_leaf/main_screen.dart';
+import 'package:green_leaf/modules/admin/views/admin_bottom_bar.dart';
 import 'package:green_leaf/modules/admin/views/admin_home_screen.dart';
 import 'package:green_leaf/modules/user/models/user_model.dart';
 import 'package:green_leaf/modules/user/views/home_screen.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
+import 'package:green_leaf/core/utils/biometric_helper.dart';
+
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -26,26 +29,45 @@ class AuthController {
       );
 
       String role = "user";
-
-      // Agar admin ka specific account ho
       if (email == "admin@gmail.com" && password == "admin123") {
         role = "admin";
       }
 
-      // User model
-      UserModel user = UserModel(
-        uid: cred.user!.uid,
-        fullname: fullname,
-        email: email,
-        role: role,
-        address: null,
-      );
+      // 🔹 Get and increment user counter
+      DocumentReference counterRef = _firestore
+          .collection('metadata')
+          .doc('user_counter');
 
-      // Save in Firestore
-      await _firestore
-          .collection("users")
-          .doc(cred.user!.uid)
-          .set(user.toMap());
+      await _firestore.runTransaction((transaction) async {
+        DocumentSnapshot snapshot = await transaction.get(counterRef);
+
+        int newId = 1;
+        if (snapshot.exists) {
+          int currentId = snapshot.get('count');
+          newId = currentId + 1;
+          transaction.update(counterRef, {'count': newId});
+        } else {
+          // first user
+          transaction.set(counterRef, {'count': 1});
+          newId = 1;
+        }
+
+        // Create user model
+        UserModel user = UserModel(
+          uid: cred.user!.uid,
+          fullname: fullname,
+          email: email,
+          role: role,
+          address: null,
+          id: newId, // ✅ Add this field in your model
+        );
+
+        // Save user
+        transaction.set(
+          _firestore.collection("users").doc(cred.user!.uid),
+          user.toMap(),
+        );
+      });
 
       ScaffoldMessenger.of(
         context,
@@ -53,11 +75,7 @@ class AuthController {
 
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) {
-            return LoginScreen();
-          },
-        ),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,11 +121,18 @@ class AuthController {
           behavior: SnackBarBehavior.floating,
         ),
       );
+      final bioHelper = BiometricHelper();
+      final canUseBio = await bioHelper.canAuthenticate();
+
+      if (canUseBio) {
+        // yahan tum dialog ya toggle UI bhi bana sakte ho
+        await bioHelper.saveCredentials(email, password);
+      }
 
       if (role == "admin") {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const AdminHomeScreen()),
+          MaterialPageRoute(builder: (context) =>  AdminBottomBar()),
         );
       } else {
         Navigator.pushReplacement(
@@ -115,7 +140,10 @@ class AuthController {
           MaterialPageRoute(builder: (context) => CustomBottomBar()),
         );
       }
-    } on FirebaseAuthException catch (e) {
+
+    }
+
+    on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Login Failed: ${e.message}")));

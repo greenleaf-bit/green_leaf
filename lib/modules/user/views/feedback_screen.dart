@@ -62,22 +62,41 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
       }),
     );
   }
-
   Future<void> _submitFeedback() async {
     List<Map<String, dynamic>> feedbackList = [];
 
-    setState(() {
-      isLoading = true;
-    });
+    // ✅ Validation check
     for (var item in widget.cartItems) {
       final id = item["productId"].toString();
+      final rating = _ratings[id] ?? 0;
+      final description = _controllers[id]?.text.trim() ?? "";
+
+      if (rating < 1) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please give at least 1 star for ${item["name"]}.")),
+        );
+        return;
+      }
+
+      if (description.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Please write feedback for ${item["name"]}.")),
+        );
+        return;
+      }
+
       feedbackList.add({
         "productId": id,
         "productName": item["name"],
-        "rating": _ratings[id],
-        "description": _controllers[id]!.text,
+        "rating": rating,
+        "description": description,
       });
     }
+
+    // ✅ Submit if validation passed
+    setState(() {
+      isLoading = true;
+    });
 
     try {
       await _orderController.saveFeedback(
@@ -93,12 +112,15 @@ class _FeedBackScreenState extends State<FeedBackScreen> {
       Navigator.pushAndRemoveUntil(
         context,
         MaterialPageRoute(builder: (ctx) => CustomBottomBar()),
-        (route) => false,
+            (route) => false,
       );
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error: $e")),
+      );
     }
   }
 

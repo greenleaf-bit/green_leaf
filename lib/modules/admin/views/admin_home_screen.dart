@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/modules/admin/views/manage_customers.dart';
 import 'package:green_leaf/modules/admin/views/manage_orders.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
+import 'package:green_leaf/modules/admin/views/manage_report_screen.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
 
 class AdminHomeScreen extends StatelessWidget {
@@ -161,7 +163,14 @@ class AdminHomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ManageCustomers(),
+                      ),
+                    );
+                  },
                   child: Container(
                     height: 160,
                     width: 155,
@@ -195,7 +204,14 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ManageReportsScreen(),
+                      ),
+                    );
+                  },
                   child: Container(
                     height: 160,
                     width: 155,
