@@ -15,6 +15,28 @@ class _CardDetailsState extends State<CardDetails> {
   final TextEditingController expiryCtrl = TextEditingController();
   final TextEditingController cvcCtrl = TextEditingController();
 
+  // Luhn Algorithm function
+  bool validateCardNumber(String input) {
+    String number = input.replaceAll(' ', ''); // remove spaces
+
+    if (!RegExp(r'^\d+$').hasMatch(number)) return false;
+
+    int sum = 0;
+    bool alternate = false;
+
+    for (int i = number.length - 1; i >= 0; i--) {
+      int n = int.parse(number[i]);
+      if (alternate) {
+        n *= 2;
+        if (n > 9) n -= 9;
+      }
+      sum += n;
+      alternate = !alternate;
+    }
+
+    return sum % 10 == 0;
+  }
+
   bool isExpired(String input) {
     try {
       // Expecting format MM/YY
@@ -69,29 +91,70 @@ class _CardDetailsState extends State<CardDetails> {
                 decoration: const InputDecoration(
                   labelText: "Card Holder Name",
                 ),
-                validator: (val) => val!.isEmpty ? "Enter name" : null,
+                validator: (val) {
+                  if (val == null || val.isEmpty) {
+                    return "Name on Card is Required";
+                  }
+                  if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(val)) {
+                    return "Name can only contain letters";
+                  }
+                  if (val.length < 3 || val.length > 26) {
+                    return "Name must be between 3 and 26 characters";
+                  }
+                  return null;
+                },
               ),
+              // TextFormField with Luhn validation
               TextFormField(
                 controller: numberCtrl,
                 decoration: const InputDecoration(labelText: "Card Number"),
                 keyboardType: TextInputType.number,
-                validator: (val) =>
-                val!.length < 16 ? "Enter valid number" : null,
+                validator: (val) {
+                  if (val == null || val.isEmpty) {
+                    return "Card Number is Required";
+                  }
+                  if (val.replaceAll(' ', '').length != 16) {
+                    return "Card Number must be 16 digits";
+                  }
+                  if (val.contains(' ')) {
+                    return "Card Number cannot contain spaces";
+                  }
+                  if (!validateCardNumber(val)) {
+                    return "Invalid Card Number (Luhn Algorithm failed )";
+                  }
+                  return null;
+                },
               ),
               Row(
                 children: [
                   Expanded(
                     child: TextFormField(
+                      maxLines: 1,
+
                       controller: expiryCtrl,
                       decoration: const InputDecoration(
                         labelText: "Expiry (MM/YY)",
+                        errorMaxLines: 3,
                       ),
                       validator: (val) {
                         if (val == null || val.isEmpty) {
-                          return "Enter expiry";
-                        } else if (isExpired(val.trim())) {
-                          return "Card expired";
+                          return "Expiry Date is required";
                         }
+
+                        String input = val.trim();
+
+                        // Check MM/YY format
+                        if (!RegExp(
+                          r'^(0[1-9]|1[0-2])\/\d{2}$',
+                        ).hasMatch(input)) {
+                          return "Enter expiry in MM/YY format";
+                        }
+
+                        // Past date check
+                        if (isExpired(input)) {
+                          return "Expiry Date is past date";
+                        }
+
                         return null;
                       },
                     ),
@@ -102,8 +165,21 @@ class _CardDetailsState extends State<CardDetails> {
                       controller: cvcCtrl,
                       decoration: const InputDecoration(labelText: "CVC"),
                       keyboardType: TextInputType.number,
-                      validator: (val) =>
-                      val!.length < 3 ? "Enter valid CVC" : null,
+                      validator: (val) {
+                        if (val == null || val.isEmpty) {
+                          return "Card CVC is Required";
+                        }
+                        if (val.length != 3) {
+                          return "Card CVC only 3 digits";
+                        }
+                        if (val.contains(' ')) {
+                          return "Card CVC cannot contain spaces";
+                        }
+                        if (!RegExp(r'^\d+$').hasMatch(val)) {
+                          return "Only numbers are allowed";
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],

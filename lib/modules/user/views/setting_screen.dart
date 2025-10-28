@@ -167,7 +167,11 @@ class _SettingScreenState extends State<SettingScreen> {
 
             // Logout
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('is_logged_in', false); // 🔹 session off
+                await prefs.setBool('fingerprint_enabled', false);
+
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(builder: (_) => LoginScreen()),

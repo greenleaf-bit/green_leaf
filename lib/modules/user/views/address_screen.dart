@@ -93,7 +93,11 @@ class _AddressScreenState extends State<AddressScreen> {
                   children: [
                     buildTextField("Area", areaController),
                     buildTextField("House Number", houseController),
-                    buildTextField("Street Number", streetController),
+                    buildTextField(
+                      "Street Number",
+                      streetController,
+                      keyboardType: TextInputType.number,
+                    ),
                     buildTextField(
                       "Way Number",
                       wayController,
@@ -169,8 +173,76 @@ class _AddressScreenState extends State<AddressScreen> {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
-        validator: (value) =>
-            value == null || value.isEmpty ? "Enter $label" : null,
+        validator: (value) {
+          if (value == null || value.isEmpty) return "Enter $label";
+
+          // Phone number validation
+          if (label == "Phone Number") {
+            // Remove spaces just in case
+            String val = value.replaceAll(' ', '');
+
+            // Check length exactly 8
+            if (val.length != 8) {
+              return "Phone number must be 8 digits";
+            }
+
+            // Check starts with 9 or 7 and all digits
+            if (!RegExp(r'^[79][0-9]{7}$').hasMatch(val)) {
+              return "Phone number must start with 9 or 7 and contain only digits";
+            }
+          }
+
+          // Way Number validation (numeric only)
+          if (label == "Way Number") {
+            if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+              return "$label must be numeric";
+            }
+            if (value.length < 1 || value.length > 6) {
+              return "Way Number Accepts Only Numbers Length 1-6";
+            }
+          }
+          if (label == "Street Number") {
+            if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
+              return "$label must be numeric";
+            }
+            if (value.length < 1 || value.length > 6) {
+              return "Street Number Accepts Only Numbers Length 1-6";
+            }
+          }
+
+          // House Number or Street Number validation (optional numeric check)
+          if (label == "House Number") {
+            // Remove spaces just in case
+            String val = value.replaceAll(' ', '');
+
+            // Check total length 1-6
+            if (val.length < 1 || val.length > 6) {
+              return "House Number must be 1-6 characters long";
+            }
+
+            // Regex for 2-6 digits
+            bool digitsOnly = RegExp(r'^\d{2,6}$').hasMatch(val);
+
+            // Regex for number + exactly 2 letters at the end (e.g., 12AB)
+            bool numberWith2Letters = RegExp(r'^\d+[A-Z]{2}$').hasMatch(val);
+
+            if (!digitsOnly && !numberWith2Letters) {
+              return "House Number must be 2-6 digits or a number with 2 letters (A-Z)";
+            }
+          }
+
+          // Area validation (letters only)
+          if (label == "Area") {
+            if (value.length < 3 || value.length > 30) {
+              return "Area must be 3-30 characters";
+            }
+            if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
+              return "Area cannot contain numbers or special characters";
+            }
+          }
+
+          return null; // validation passed
+        },
         decoration: InputDecoration(
           labelText: label,
           labelStyle: GoogleFonts.inter(

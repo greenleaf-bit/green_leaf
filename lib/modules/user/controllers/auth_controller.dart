@@ -93,6 +93,7 @@ class AuthController {
     required String email,
     required String password,
     required BuildContext context,
+    skipSnackBar = true,
   }) async {
     try {
       UserCredential cred = await _auth.signInWithEmailAndPassword(
@@ -113,15 +114,16 @@ class AuthController {
       }
 
       String role = userDoc["role"];
-
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Login Successful")));
-
-      // 🔹 Always save credentials
+      if (skipSnackBar) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text("Login Successful")));
+      }
+      //  Always save credentials
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('saved_email', email);
       await prefs.setString('saved_password', password);
+      await prefs.setBool('is_logged_in', true); //  session flag
 
       // 🔹 Only enable biometric if toggle is ON
       final bioHelper = BiometricHelper();

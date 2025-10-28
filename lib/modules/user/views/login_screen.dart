@@ -22,14 +22,11 @@ class _LoginScreenState extends State<LoginScreen> {
   final AuthController _authController = AuthController();
   bool isLoading = false;
   bool _fingerprintEnabled = false; // ✅ toggle state
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /// Login user with given email and password.
-  ///
-  /// If the form is valid, set the loading state to true and call the loginUser method of the AuthController.
-  /*******  aa7b25ab-a08a-40bf-b09c-40c877d34f7f  *******/
+
   @override
   void initState() {
     super.initState();
+
     _loadFingerprintSetting();
     _tryAutoBiometricLogin();
   }

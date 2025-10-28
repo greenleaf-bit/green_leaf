@@ -86,8 +86,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your Full Name';
                     }
-                    if (value.length < 4) {
-                      return 'Name Should Be at Least 4 Characters ';
+                    if (value.length < 3) {
+                      return 'Name Should Be at Least 3 Characters ';
                     }
                     if (value.length > 30) {
                       return 'Name should not exceed 30 characters ';
@@ -130,6 +130,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     }
                     if (value.length < 8) {
                       return 'Password must be more than 8 characters long';
+                    }
+                    // Regex check for letters, numbers, and special characters
+                    bool hasLetter = value.contains(RegExp(r'[A-Za-z]'));
+                    bool hasNumber = value.contains(RegExp(r'[0-9]'));
+                    bool hasSpecial = value.contains(
+                      RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
+                    );
+
+                    if (!hasLetter || !hasNumber || !hasSpecial) {
+                      return 'Password must include letters, numbers, and special characters';
                     }
 
                     return null;

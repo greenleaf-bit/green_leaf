@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/modules/user/controllers/auth_controller.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
 import 'package:green_leaf/modules/user/views/register_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -13,18 +15,39 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final AuthController _authController = AuthController();
+
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(
-          builder: (context) {
-            return LoginScreen();
-          },
-        ),
-      );
-    });
+    _checkSession(); // session check
+  }
+
+  Future<void> _checkSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
+
+    if (isLoggedIn) {
+      final email = prefs.getString('saved_email');
+      final password = prefs.getString('saved_password');
+
+      if (email != null && password != null) {
+        // 🔹 Auto-login directly to home/admin
+        await _authController.loginUser(
+          email: email,
+          password: password,
+          context: context,
+          skipSnackBar: false,
+        );
+        return; // important
+      }
+    }
+
+    // 🔹 If not logged in → go to LoginScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+    );
   }
 
   @override
@@ -63,14 +86,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     style: GoogleFonts.inter(
                       fontSize: 36,
                       fontWeight: FontWeight.w700,
-                      color: Color(0xFF3A7F0D),
+                      color: const Color(0xFF3A7F0D),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: Stack(
