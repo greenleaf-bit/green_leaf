@@ -3,8 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class CartController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
+  final _auth = FirebaseAuth.instance;
 
   /// Add to Cart
   Future<void> addToCart({
@@ -53,6 +53,10 @@ class CartController {
               double.parse(productData["price"].toString()) * quantity,
           "createdAt": FieldValue.serverTimestamp(),
         });
+        //For Automated Testing
+        print(
+          "✅ Added new item to cart: ${productData["name"]} | Quantity: $quantity | Price: ${productData["price"]}",
+        );
       }
 
       ScaffoldMessenger.of(context).showSnackBar(

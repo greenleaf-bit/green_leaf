@@ -4,6 +4,7 @@ import 'package:green_leaf/core/utils/custom_textfield.dart';
 import 'package:green_leaf/modules/user/controllers/auth_controller.dart';
 import 'package:green_leaf/modules/user/views/forgot_password_screen.dart';
 import 'package:green_leaf/modules/user/views/register_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../core/utils/biometric_helper.dart';
 
@@ -20,50 +21,81 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
   final AuthController _authController = AuthController();
   bool isLoading = false;
+  bool _fingerprintEnabled = false; // ✅ toggle state
+  /*************  ✨ Windsurf Command ⭐  *************/
+  /// Login user with given email and password.
+  ///
+  /// If the form is valid, set the loading state to true and call the loginUser method of the AuthController.
+  /*******  aa7b25ab-a08a-40bf-b09c-40c877d34f7f  *******/
+  @override
+  void initState() {
+    super.initState();
+    _loadFingerprintSetting();
+    _tryAutoBiometricLogin();
+  }
+
+  void _loadFingerprintSetting() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _fingerprintEnabled = prefs.getBool('fingerprint_enabled') ?? false;
+    });
+  }
+
   void login() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         isLoading = true;
       });
+
       await _authController.loginUser(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
         context: context,
       );
+
+      // 🔹 Always save credentials
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('saved_email', emailController.text.trim());
+      await prefs.setString('saved_password', passwordController.text.trim());
+
+      // 🔹 Enable fingerprint if toggle is ON
+      final bioHelper = BiometricHelper();
+      if (_fingerprintEnabled) {
+        await bioHelper.saveCredentials(
+          emailController.text.trim(),
+          passwordController.text.trim(),
+        );
+      }
+
       setState(() {
         isLoading = false;
       });
-    } else {
-      return;
     }
   }
-  @override
-  void initState() {
-    super.initState();
-    _tryAutoBiometricLogin();
-  }
-  Future<void> _tryAutoBiometricLogin() async {
-    final bioHelper = BiometricHelper();
-    final isEnabled = await bioHelper.isBiometricEnabled();
 
-    if (isEnabled) {
-      final canUse = await bioHelper.canAuthenticate();
-      if (canUse) {
-        final success = await bioHelper.authenticateUser();
-        if (success) {
-          final creds = await bioHelper.getSavedCredentials();
-          if (creds != null) {
-            // Call your login method directly
-            await AuthController().loginUser(
-              email: creds['email']!,
-              password: creds['password']!,
-              context: context,
-            );
-          }
-        }
+  Future<void> _tryAutoBiometricLogin() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isEnabled = prefs.getBool('fingerprint_enabled') ?? false;
+
+    if (!isEnabled) return;
+
+    final bioHelper = BiometricHelper();
+    final canUse = await bioHelper.canAuthenticate();
+    if (!canUse) return;
+
+    final success = await bioHelper.authenticateUser();
+    if (success) {
+      final creds = await bioHelper.getSavedCredentials();
+      if (creds != null) {
+        await _authController.loginUser(
+          email: creds['email']!,
+          password: creds['password']!,
+          context: context,
+        );
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -73,9 +105,8 @@ class _LoginScreenState extends State<LoginScreen> {
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-
               children: [
-                SizedBox(height: 180),
+                SizedBox(height: 140),
                 Text(
                   'Login',
                   style: GoogleFonts.inter(
@@ -106,7 +137,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ).hasMatch(value)) {
                       return 'Please enter a valid email address';
                     }
-
                     return null;
                   },
                 ),
@@ -120,7 +150,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     if (value == null || value.isEmpty) {
                       return 'Please enter your Password';
                     }
-
                     return null;
                   },
                 ),
@@ -133,9 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (ctx) {
-                              return ForgotPasswordScreen();
-                            },
+                            builder: (ctx) => ForgotPasswordScreen(),
                           ),
                         );
                       },
@@ -148,6 +175,37 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
+                  ),
+                ),
+                // 🔹 Fingerprint Toggle Button
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SwitchListTile(
+                    activeColor: Color(0xFF325A3E),
+                    inactiveTrackColor: Color(0xFFA5AFA8).withOpacity(0.2),
+                    title: Text(
+                      "Enable Fingerprint",
+                      style: GoogleFonts.inter(
+                        color: Color(0xFF325A3E),
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                      ),
+                    ),
+                    value: _fingerprintEnabled,
+                    onChanged: (val) async {
+                      final prefs = await SharedPreferences.getInstance();
+                      setState(() {
+                        _fingerprintEnabled = val;
+                      });
+                      await prefs.setBool('fingerprint_enabled', val);
+                      final bioHelper = BiometricHelper();
+                      if (val) {
+                        await bioHelper.saveCredentials(
+                          emailController.text.trim(),
+                          passwordController.text.trim(),
+                        );
+                      }
+                    },
                   ),
                 ),
                 Image.asset(
@@ -167,9 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           borderRadius: BorderRadius.circular(100),
                         ),
                       ),
-                      onPressed: () {
-                        login();
-                      },
+                      onPressed: login,
                       child: Center(
                         child: isLoading
                             ? CircularProgressIndicator()
@@ -186,6 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 SizedBox(height: 12),
+
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [

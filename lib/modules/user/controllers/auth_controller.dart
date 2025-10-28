@@ -8,7 +8,7 @@ import 'package:green_leaf/modules/user/models/user_model.dart';
 import 'package:green_leaf/modules/user/views/home_screen.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
 import 'package:green_leaf/core/utils/biometric_helper.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -95,7 +95,6 @@ class AuthController {
     required BuildContext context,
   }) async {
     try {
-      // Firebase se login
       UserCredential cred = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
@@ -109,48 +108,46 @@ class AuthController {
       if (!userDoc.exists) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(const SnackBar(content: Text("User record not found")));
+        ).showSnackBar(const SnackBar(content: Text("User not found")));
         return;
       }
 
       String role = userDoc["role"];
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Login Successful"),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-      final bioHelper = BiometricHelper();
-      final canUseBio = await bioHelper.canAuthenticate();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Login Successful")));
 
-      if (canUseBio) {
-        // yahan tum dialog ya toggle UI bhi bana sakte ho
-        await bioHelper.saveCredentials(email, password);
+      // 🔹 Always save credentials
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('saved_email', email);
+      await prefs.setString('saved_password', password);
+
+      // 🔹 Only enable biometric if toggle is ON
+      final bioHelper = BiometricHelper();
+      final isEnabled = prefs.getBool('fingerprint_enabled') ?? false;
+      if (isEnabled) {
+        await bioHelper.saveCredentials(
+          email,
+          password,
+        ); // optional helper logic
       }
 
       if (role == "admin") {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) =>  AdminBottomBar()),
+          MaterialPageRoute(builder: (_) => AdminBottomBar()),
         );
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => CustomBottomBar()),
+          MaterialPageRoute(builder: (_) => CustomBottomBar()),
         );
       }
-
-    }
-
-    on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("Login Failed: ${e.message}")));
-    } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Error: $e")));
     }
   }
 

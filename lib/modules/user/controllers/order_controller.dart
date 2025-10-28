@@ -37,10 +37,33 @@ class OrderController {
       "feedbacks": [],
     };
 
-    // 🔹 yahan reference le lo
+    // 🔹 Firestore pe order save karna
     final docRef = await _firestore.collection("orders").add(orderData);
 
-    // Clear cart after placing order
+    // 🔹 For Automated Testing
+    print("🧾 NEW ORDER PLACED -------------------------");
+    print("📦 Order ID: ${docRef.id}");
+    print("👤 User ID: ${user.uid}");
+    print(
+      "📍 Address: ${address["street"] ?? "N/A"}, ${address["city"] ?? ""}",
+    );
+    print("💳 Payment Method: $paymentMethod");
+    if (paymentMethod == "Card") {
+      print("💳 Card Info: ${cardData ?? {}}");
+    }
+    print("💰 Subtotal: $subtotal");
+    print("🚚 Delivery Fee: $deliveryFee");
+    print("🧾 Service Fee: $serviceFee");
+    print("💵 Total Amount: $totalAmount");
+    print("🛒 Cart Items:");
+    for (var item in cartItems) {
+      print(
+        "  • ${item["name"]} | Qty: ${item["quantity"]} | Price: ${item["price"]} | Total: ${item["totalPrice"]}",
+      );
+    }
+    print("-------------------------------------------");
+
+    // 🔹 Cart clear karna
     final cartRef = _firestore
         .collection("carts")
         .doc(user.uid)
@@ -50,7 +73,7 @@ class OrderController {
       await doc.reference.delete();
     }
 
-    return docRef.id; // 🔹 ye return karega orderId
+    return docRef.id; // 🔹 Return karega orderId
   }
 
   //get order by user id

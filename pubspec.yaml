@@ -46,6 +46,12 @@ dependencies:
   local_auth: ^3.0.0
   shared_preferences: ^2.5.3
   speech_to_text: ^7.3.0
+  mockito: ^5.5.1
+  
+  build_runner: ^2.10.1
+  fake_cloud_firestore: ^4.0.0
+  firebase_auth_mocks: ^0.15.1
+  firebase_core_platform_interface: ^6.0.2
 
 dev_dependencies:
   flutter_test:
