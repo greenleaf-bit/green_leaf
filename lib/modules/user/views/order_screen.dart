@@ -195,8 +195,7 @@ class OrderScreen extends StatelessWidget {
                                   const SizedBox(width: 60),
                                   Expanded(
                                     child: Text(
-                                      "${item["totalPrice"]} OMR",
-
+                                      "${(double.tryParse(item["totalPrice"].toString()) ?? 0).toStringAsFixed(3)} OMR",
                                       style: GoogleFonts.inter(
                                         fontWeight: FontWeight.w600,
                                         fontSize: 12,
@@ -227,7 +226,7 @@ class OrderScreen extends StatelessWidget {
                             Align(
                               alignment: Alignment.centerRight,
                               child: Text(
-                                "${(order["totalAmount"] as num).toStringAsFixed(2)} OMR",
+                                "${(order["totalAmount"] as num).toStringAsFixed(3)} OMR",
                                 style: GoogleFonts.inter(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w500,
@@ -235,7 +234,6 @@ class OrderScreen extends StatelessWidget {
                                 ),
                               ),
                             ),
-
                           ],
                         ),
                         SizedBox(height: 10),

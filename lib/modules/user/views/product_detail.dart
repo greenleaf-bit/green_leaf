@@ -101,7 +101,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ],
                     ),
                     Text(
-                      "${data["price"] ?? 0} OMR",
+                      "${(double.tryParse(data["price"].toString()) ?? 0).toStringAsFixed(3)} OMR",
                       style: GoogleFonts.inter(
                         fontSize: 20,
                         fontWeight: FontWeight.w500,

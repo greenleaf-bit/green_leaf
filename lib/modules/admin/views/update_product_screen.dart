@@ -84,7 +84,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
 
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const ManageProducts()),
+          MaterialPageRoute(builder: (context) => ManageProducts()),
         );
       } else {
         ScaffoldMessenger.of(

@@ -9,44 +9,41 @@ class AllFeedbackScreen extends StatelessWidget {
     final FirebaseFirestore firestore = FirebaseFirestore.instance;
     List<Map<String, dynamic>> allFeedbacks = [];
 
-    // 🔹 Get all orders
-    QuerySnapshot ordersSnapshot = await firestore.collection('orders').get();
+    // 🔹 Get all feedback documents
+    QuerySnapshot feedbackSnapshot = await firestore
+        .collection('feedbacks')
+        .get();
 
-    for (var orderDoc in ordersSnapshot.docs) {
-      final orderData = orderDoc.data() as Map<String, dynamic>? ?? {};
-      final userId = orderData['userId'];
+    for (var fbDoc in feedbackSnapshot.docs) {
+      final feedbackData = fbDoc.data() as Map<String, dynamic>? ?? {};
+      final String userId = feedbackData['userId'] ?? '';
+      String customerName = 'Unknown';
+      int customerId = 0;
 
-      // 🔹 Get user info using uid
-      String customerName = "Unknown";
-      int customerId=0;
-      String customerUid = userId ?? 'N/A';
-
-      if (customerUid != 'N/A') {
-        final userSnapshot =
-        await firestore.collection('users').where('uid', isEqualTo: customerUid).get();
+      // 🔹 Get user details from 'users' collection
+      if (userId.isNotEmpty) {
+        final userSnapshot = await firestore
+            .collection('users')
+            .where('uid', isEqualTo: userId)
+            .limit(1)
+            .get();
 
         if (userSnapshot.docs.isNotEmpty) {
           final userData = userSnapshot.docs.first.data();
           customerName = userData['fullname'] ?? 'Unknown';
-          customerId=userData['id'] ?? '0';
+          customerId = userData['id'] ?? 0;
         }
       }
 
-      // 🔹 Check feedbacks array
-      if (orderData['feedbacks'] != null && orderData['feedbacks'] is List) {
-        List feedbacks = orderData['feedbacks'];
-
-        for (var fb in feedbacks) {
-          allFeedbacks.add({
-            'userId': customerUid,
-            'id': customerId,
-            'customerName': customerName,
-            'productName': fb['productName'] ?? 'Unknown Product',
-            'description': fb['description'] ?? 'No description',
-            'rating': fb['rating'] ?? 0,
-          });
-        }
-      }
+      // 🔹 Add feedback details to list
+      allFeedbacks.add({
+        'userId': userId,
+        'id': customerId,
+        'customerName': customerName,
+        'productName': feedbackData['productName'] ?? 'Unknown Product',
+        'description': feedbackData['comment'] ?? 'No description',
+        'rating': feedbackData['rating'] ?? 0,
+      });
     }
 
     return allFeedbacks;
@@ -94,16 +91,17 @@ class AllFeedbackScreen extends StatelessWidget {
 
           if (snapshot.hasError) {
             return Center(
-                child: Text("Error: ${snapshot.error}",
-                    style: const TextStyle(color: Colors.red)));
+              child: Text(
+                "Error: ${snapshot.error}",
+                style: const TextStyle(color: Colors.red),
+              ),
+            );
           }
 
           final feedbacks = snapshot.data ?? [];
 
           if (feedbacks.isEmpty) {
-            return const Center(
-              child: Text("No feedbacks available."),
-            );
+            return const Center(child: Text("No feedbacks available."));
           }
 
           return ListView.builder(
@@ -119,80 +117,95 @@ class AllFeedbackScreen extends StatelessWidget {
                   color: const Color(0XFFE8F5EE),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                      color: const Color(0XFF3B6C1E).withOpacity(0.6)),
+                    color: const Color(0XFF3B6C1E).withOpacity(0.6),
+                  ),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
-                        Text("Customer UID: ",
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0XFF454545),
-                            )),
-                        Text(feedback['id'].toString(),
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0XFF428DFF),
-                            )),
+                        Text(
+                          "Customer UID: ",
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0XFF454545),
+                          ),
+                        ),
+                        Text(
+                          feedback['id'].toString(),
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0XFF428DFF),
+                          ),
+                        ),
                       ],
                     ),
                     Row(
                       children: [
-                        Text("Customer Name: ",
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0XFF454545),
-                            )),
-                        Text(feedback['customerName'].toString(),
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0XFF428DFF),
-                            )),
+                        Text(
+                          "Customer Name: ",
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0XFF454545),
+                          ),
+                        ),
+                        Text(
+                          feedback['customerName'].toString(),
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0XFF428DFF),
+                          ),
+                        ),
                       ],
                     ),
                     const Divider(color: Color(0XFF9D9D9D), thickness: 1),
-                    Text("Product: ${feedback['productName']}",
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0XFF454545),
-                        )),
+                    Text(
+                      "Product: ${feedback['productName']}",
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: const Color(0XFF454545),
+                      ),
+                    ),
                     const SizedBox(height: 5),
-                    Text(feedback['description'].toString(),
-                        style: GoogleFonts.inter(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w300,
-                          color: const Color(0XFF456B2E).withOpacity(0.86),
-                        )),
+                    Text(
+                      feedback['description'].toString(),
+                      style: GoogleFonts.inter(
+                        fontSize: 10,
+                        fontWeight: FontWeight.w300,
+                        color: const Color(0XFF456B2E).withOpacity(0.86),
+                      ),
+                    ),
                     const SizedBox(height: 6),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("Rating",
-                            style: GoogleFonts.inter(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0XFF454545),
-                            )),
+                        Text(
+                          "Rating",
+                          style: GoogleFonts.inter(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0XFF454545),
+                          ),
+                        ),
                         Row(
                           children: List.generate(
-                            (feedback['rating'] ?? 0).toInt(), // 👈 convert to int
-                                (i) => const Icon(
+                            (feedback['rating'] ?? 0)
+                                .toInt(), // 👈 convert to int
+                            (i) => const Icon(
                               Icons.star,
                               color: Colors.amber,
                               size: 14,
                             ),
                           ),
                         ),
-
                       ],
-                    )
+                    ),
                   ],
                 ),
               );

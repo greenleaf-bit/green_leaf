@@ -29,7 +29,7 @@ class AuthController {
       );
 
       String role = "user";
-      if (email == "admin@gmail.com" && password == "admin123") {
+      if (email == "project2greenleaf@gmail.com" && password == "admin123#") {
         role = "admin";
       }
 

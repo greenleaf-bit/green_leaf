@@ -65,19 +65,11 @@ class ReportsController {
   /// 🔹 Fetch total feedbacks count from all orders
   Future<int> getTotalFeedbacksCount(BuildContext context) async {
     try {
-      QuerySnapshot ordersSnapshot = await _firestore
-          .collection("orders")
+      QuerySnapshot feedbacksSnapshot = await _firestore
+          .collection("feedbacks")
           .get();
-      int totalFeedbacks = 0;
 
-      for (var doc in ordersSnapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
-
-        // Agar 'feedbacks' ek list hai to uska length count karo
-        if (data["feedbacks"] != null && data["feedbacks"] is List) {
-          totalFeedbacks += (data["feedbacks"] as List).length;
-        }
-      }
+      int totalFeedbacks = feedbacksSnapshot.size; // direct count
 
       return totalFeedbacks;
     } catch (e) {

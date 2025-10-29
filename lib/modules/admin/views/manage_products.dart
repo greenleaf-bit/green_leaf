@@ -247,12 +247,14 @@ class _ManageProductsState extends State<ManageProducts> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        "${data["price"] ?? 0} OMR",
-                                        style: GoogleFonts.inter(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w600,
-                                          color: Color(0xFF325A3E),
+                                      Expanded(
+                                        child: Text(
+                                          "${(double.tryParse(data["price"].toString()) ?? 0).toStringAsFixed(3)} OMR",
+                                          style: GoogleFonts.inter(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFF325A3E),
+                                          ),
                                         ),
                                       ),
                                       InkWell(

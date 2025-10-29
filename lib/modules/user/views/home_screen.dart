@@ -233,12 +233,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   color: const Color(0XFF325A3E),
                                 ),
                               ),
-                              Text(
-                                "${data["price"] ?? 0} OMR",
-                                style: GoogleFonts.lexend(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: const Color(0XFF325A3E),
+                              FittedBox(
+                                child: Text(
+                                  "${(double.tryParse(data["price"].toString()) ?? 0).toStringAsFixed(3)} OMR",
+                                  style: GoogleFonts.lexend(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0XFF325A3E),
+                                  ),
                                 ),
                               ),
                             ],
