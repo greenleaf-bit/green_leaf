@@ -195,28 +195,57 @@ class OrderController {
     }
   }
 
+  Future<void> saveUserAddress(Map<String, String> address) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        print("❌ No logged in user found");
+        return;
+      }
+
+      await _firestore.collection("users").doc(user.uid).set(
+        {"address": address},
+        SetOptions(merge: true), // merge = update existing data, not overwrite
+      );
+
+      print("✅ Address saved successfully for ${user.uid}");
+    } catch (e) {
+      print("❌ Error saving address: $e");
+    }
+  }
+
   /// Load previous address from last order
   Future<Map<String, dynamic>?> getPreviousAddress() async {
     try {
       final user = _auth.currentUser;
       if (user == null) return null;
 
-      final orderSnapshot = await _firestore
-          .collection('orders')
-          .where('userId', isEqualTo: user.uid)
-          .limit(1)
-          .get();
+      final userDoc = await _firestore.collection('users').doc(user.uid).get();
 
-      if (orderSnapshot.docs.isNotEmpty) {
-        final lastOrder = orderSnapshot.docs.first.data();
-        return lastOrder['address'] != null
-            ? Map<String, dynamic>.from(lastOrder['address'])
-            : null;
+      if (userDoc.exists) {
+        final data = userDoc.data() as Map<String, dynamic>;
+        if (data.containsKey('address') && data['address'] != null) {
+          return Map<String, dynamic>.from(data['address']);
+        }
       }
+
       return null;
     } catch (e) {
-      debugPrint("Error fetching address: $e");
+      debugPrint("❌ Error fetching address: $e");
       return null;
+    }
+  }
+
+  Future<void> updateAddress(Map<String, dynamic> address) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) return;
+
+      await _firestore.collection('users').doc(user.uid).update({
+        'address': address,
+      });
+    } catch (e) {
+      debugPrint("❌ Error updating address: $e");
     }
   }
 

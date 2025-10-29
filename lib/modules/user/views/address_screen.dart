@@ -217,8 +217,8 @@ class _AddressScreenState extends State<AddressScreen> {
                             "phone": phoneController.text,
                           };
 
-                          // // 🔹 Save to Firebase users collection (optional)
-                          // await _addressController.saveUserAddress(address);
+                          // // 🔹 Save to Firebase users collection
+                          await _addressController.saveUserAddress(address);
 
                           Navigator.push(
                             context,
@@ -332,6 +332,8 @@ class _AddressScreenState extends State<AddressScreen> {
         },
         decoration: InputDecoration(
           labelText: label,
+          errorMaxLines: 2,
+
           labelStyle: GoogleFonts.inter(
             color: const Color(0XFF39571E).withOpacity(0.8),
             fontSize: 12,

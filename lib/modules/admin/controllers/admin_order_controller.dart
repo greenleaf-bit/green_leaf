@@ -10,6 +10,41 @@ class AdminOrderController {
     return ordersCollection.orderBy("createdAt", descending: true).snapshots();
   }
 
+  Future<List<Map<String, dynamic>>> fetchOrdersWithUserDetails() async {
+    final ordersSnapshot = await ordersCollection.get();
+    List<Map<String, dynamic>> result = [];
+
+    for (var doc in ordersSnapshot.docs) {
+      final order = doc.data() as Map<String, dynamic>;
+      final userUid = order["userId"];
+
+      String customerName = "Unknown";
+      int customerId = 0;
+
+      if (userUid != null) {
+        final userSnap = await _firestore
+            .collection("users")
+            .where("uid", isEqualTo: userUid)
+            .get();
+
+        if (userSnap.docs.isNotEmpty) {
+          final userData = userSnap.docs.first.data();
+          customerName = userData["fullname"] ?? "Unknown";
+          customerId = userData["id"] ?? 0;
+        }
+      }
+
+      result.add({
+        "orderId": doc.id,
+        "order": order,
+        "customerName": customerName,
+        "customerId": customerId,
+      });
+    }
+
+    return result;
+  }
+
   // Update status + Notification logic
   Future<void> updateOrderStatus(String orderId, String status) async {
     await ordersCollection.doc(orderId).update({"status": status});
