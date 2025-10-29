@@ -116,17 +116,17 @@ class _SettingScreenState extends State<SettingScreen> {
             Divider(thickness: 1, color: Color(0XFF3B6C1E)),
 
             // Change Email
-            _buildSettingRow(
-              context,
-              title: "Change Email",
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ChangeEmailScreen()),
-                );
-              },
-            ),
-            Divider(thickness: 1, color: Color(0XFF3B6C1E)),
+            // _buildSettingRow(
+            //   context,
+            //   title: "Change Email",
+            //   onTap: () {
+            //     Navigator.push(
+            //       context,
+            //       MaterialPageRoute(builder: (_) => ChangeEmailScreen()),
+            //     );
+            //   },
+            // ),
+            // Divider(thickness: 1, color: Color(0XFF3B6C1E)),
 
             // Change Password
             _buildSettingRow(

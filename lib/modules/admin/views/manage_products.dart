@@ -5,6 +5,7 @@ import 'package:green_leaf/modules/admin/controllers/product_controller.dart';
 import 'package:green_leaf/modules/admin/views/add_product.dart';
 import 'package:green_leaf/modules/admin/views/update_product_screen.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ManageProducts extends StatefulWidget {
   const ManageProducts({super.key});
@@ -54,7 +55,13 @@ class _ManageProductsState extends State<ManageProducts> {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool(
+                      'is_logged_in',
+                      false,
+                    ); // 🔹 session off
+                    await prefs.setBool('fingerprint_enabled', false);
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

@@ -7,26 +7,49 @@ class ReportsController {
   /// 🔹 Fetch total orders count
   Future<int> getTotalOrdersCount(BuildContext context) async {
     try {
-      QuerySnapshot ordersSnapshot = await _firestore.collection("orders").get();
+      QuerySnapshot ordersSnapshot = await _firestore
+          .collection("orders")
+          .get();
       return ordersSnapshot.docs.length;
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error fetching order count: $e")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error fetching order count: $e")));
       return 0;
     }
   }
 
-  /// 🔹 Fetch total revenue (sum of totalAmount field)
+  /// 🔹 Fetch total Accepted orders count
+  Future<int> getTotalAcceptedOrdersCount(BuildContext context) async {
+    try {
+      QuerySnapshot ordersSnapshot = await _firestore
+          .collection("orders")
+          .where("status", isEqualTo: "Completed")
+          .get();
+      return ordersSnapshot.docs.length;
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Error fetching order count: $e")));
+      return 0;
+    }
+  }
+
   Future<double> getTotalRevenue(BuildContext context) async {
     try {
-      QuerySnapshot ordersSnapshot = await _firestore.collection("orders").get();
+      // Only orders with status == "completed"
+      QuerySnapshot ordersSnapshot = await _firestore
+          .collection("orders")
+          .where("status", isEqualTo: "Completed")
+          .get();
+
       double totalRevenue = 0.0;
 
       for (var doc in ordersSnapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
         if (data["totalAmount"] != null) {
-          totalRevenue += double.tryParse(data["totalAmount"].toString()) ?? 0.0;
+          totalRevenue +=
+              double.tryParse(data["totalAmount"].toString()) ?? 0.0;
         }
       }
 
@@ -42,7 +65,9 @@ class ReportsController {
   /// 🔹 Fetch total feedbacks count from all orders
   Future<int> getTotalFeedbacksCount(BuildContext context) async {
     try {
-      QuerySnapshot ordersSnapshot = await _firestore.collection("orders").get();
+      QuerySnapshot ordersSnapshot = await _firestore
+          .collection("orders")
+          .get();
       int totalFeedbacks = 0;
 
       for (var doc in ordersSnapshot.docs) {

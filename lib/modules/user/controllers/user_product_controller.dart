@@ -13,11 +13,12 @@ class UserProductController {
       return _firestore.collection("products").snapshots();
     }
 
-    // Search ke hisaab se filter karo
+    String searchLower = search.toLowerCase();
+
     return _firestore
         .collection("products")
-        .where("name", isGreaterThanOrEqualTo: search)
-        .where("name", isLessThanOrEqualTo: search + '\uf8ff')
+        .where("name_lowercase", isGreaterThanOrEqualTo: searchLower)
+        .where("name_lowercase", isLessThanOrEqualTo: searchLower + '\uf8ff')
         .snapshots();
   }
 }

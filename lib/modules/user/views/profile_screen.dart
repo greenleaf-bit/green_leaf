@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/user/views/help_center_screen.dart';
+import 'package:green_leaf/modules/user/views/notification_screen.dart';
 import 'package:green_leaf/modules/user/views/setting_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -105,6 +106,45 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(width: 20),
                     Text(
                       "Help Center",
+                      style: GoogleFonts.inter(
+                        fontSize: 14,
+                        color: Color(0XFF39571E),
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+            InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (ctx) {
+                      return NotificationScreen();
+                    },
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(8), // halka rounded effect
+              splashColor: Colors.green.withOpacity(0.2), // ripple color
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 10,
+                  horizontal: 8,
+                ),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.notifications_outlined,
+                      size: 30,
+                      color: Color(0XFF336105),
+                    ),
+                    SizedBox(width: 20),
+                    Text(
+                      "Notifications",
                       style: GoogleFonts.inter(
                         fontSize: 14,
                         color: Color(0XFF39571E),

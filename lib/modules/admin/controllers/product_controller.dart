@@ -60,6 +60,7 @@ class ProductController {
       "type": type,
       "description": description,
       "imageUrl": imageUrl,
+      "name_lowercase": name.toLowerCase(),
       "createdAt": FieldValue.serverTimestamp(),
     });
   }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/admin/controllers/product_controller.dart';
+import 'package:green_leaf/modules/admin/views/admin_bottom_bar.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
 
 class AddProduct extends StatefulWidget {
@@ -56,7 +57,7 @@ class _AddProductState extends State<AddProduct> {
         _formKey.currentState!.reset();
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => ManageProducts()),
+          MaterialPageRoute(builder: (context) => AdminBottomBar()),
         );
 
         setState(() {

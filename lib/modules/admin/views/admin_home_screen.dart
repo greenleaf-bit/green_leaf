@@ -5,6 +5,7 @@ import 'package:green_leaf/modules/admin/views/manage_orders.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
 import 'package:green_leaf/modules/admin/views/manage_report_screen.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminHomeScreen extends StatelessWidget {
   const AdminHomeScreen({super.key});
@@ -35,7 +36,13 @@ class AdminHomeScreen extends StatelessWidget {
                 ),
                 const Spacer(),
                 TextButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    await prefs.setBool(
+                      'is_logged_in',
+                      false,
+                    ); // 🔹 session off
+                    await prefs.setBool('fingerprint_enabled', false);
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(

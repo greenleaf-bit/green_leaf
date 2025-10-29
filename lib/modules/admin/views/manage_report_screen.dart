@@ -15,7 +15,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
   int totalOrders = 0;
   double totalRevenue = 0.0;
   int totalFeedbacks = 0;
-
+  int totalAcceptedOrders = 0;
   bool isLoading = true;
 
   final ReportsController _reportsController = ReportsController();
@@ -26,6 +26,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
     _loadReports();
     _loadRevenue();
     _loadFeedbackCount();
+    _loadProductsSoldCount();
   }
 
   Future<void> _loadRevenue() async {
@@ -51,6 +52,15 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
       isLoading = false;
     });
   }
+
+  Future<void> _loadProductsSoldCount() async {
+    final count = await _reportsController.getTotalAcceptedOrdersCount(context);
+    setState(() {
+      totalAcceptedOrders = count;
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,7 +76,6 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
             color: const Color(0XFF476C2F),
           ),
         ),
-
       ),
       body: Column(
         children: [
@@ -88,7 +97,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                     isLoading
                         ? CircularProgressIndicator()
                         : Text(
-                            "$totalOrders",
+                            "$totalAcceptedOrders",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.inter(
                               fontSize: 60,
@@ -128,15 +137,17 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                       children: [
                         isLoading
                             ? CircularProgressIndicator()
-                            : Text(
-                                totalRevenue.toStringAsFixed(0), // e.g. 125.6
+                            : FittedBox(
+                                child: Text(
+                                  totalRevenue.toStringAsFixed(3), // e.g. 125.6
 
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.inter(
-                                  letterSpacing: 2,
-                                  color: Color(0XFF456B2E),
-                                  fontSize: 60,
-                                  fontWeight: FontWeight.w500,
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.inter(
+                                    letterSpacing: 2,
+                                    color: Color(0XFF456B2E),
+                                    fontSize: 60,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                         Text(
@@ -196,7 +207,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                       isLoading
                           ? CircularProgressIndicator()
                           : Text(
-                        "$totalFeedbacks",
+                              "$totalFeedbacks",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 fontSize: 60,
@@ -245,7 +256,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                       isLoading
                           ? CircularProgressIndicator()
                           : Text(
-                          "$totalOrders",
+                              "$totalOrders",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
                                 letterSpacing: 2,

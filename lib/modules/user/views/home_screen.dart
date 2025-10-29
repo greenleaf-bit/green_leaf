@@ -6,7 +6,6 @@ import 'package:green_leaf/modules/user/controllers/user_product_controller.dart
 import 'package:green_leaf/modules/user/views/product_detail.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -30,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     fetchUserName();
   }
+
   void _listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
@@ -65,7 +65,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _speech.stop();
     }
   }
-
 
   void fetchUserName() async {
     final user = FirebaseAuth.instance.currentUser;
@@ -139,7 +138,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       onPressed: _listen,
                     ),
-                  ],                  hintText: "Search plants",
+                  ],
+                  hintText: "Search plants",
                   hintStyle: WidgetStateProperty.all(
                     GoogleFonts.inter(
                       fontSize: 14,

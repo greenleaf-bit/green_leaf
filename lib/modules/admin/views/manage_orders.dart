@@ -55,7 +55,6 @@ class ManageOrderScreen extends StatelessWidget {
                 final status = order["status"] ?? "Pending";
 
                 return Column(
-
                   children: [
                     // Date + Status row
                     Padding(
@@ -136,7 +135,9 @@ class ManageOrderScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: items.map((item) {
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 6),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 6,
+                                ),
                                 child: Row(
                                   children: [
                                     ClipRRect(
@@ -240,10 +241,11 @@ class ManageOrderScreen extends StatelessWidget {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    await adminOrderController.updateOrderStatus(
-                                      orderDoc.id,
-                                      "Cancelled",
-                                    );
+                                    await adminOrderController
+                                        .updateOrderStatus(
+                                          orderDoc.id,
+                                          "Cancelled",
+                                        );
                                   },
                                   child: const Text(
                                     "Cancel",
@@ -259,10 +261,11 @@ class ManageOrderScreen extends StatelessWidget {
                                     ),
                                   ),
                                   onPressed: () async {
-                                    await adminOrderController.updateOrderStatus(
-                                      orderDoc.id,
-                                      "Completed",
-                                    );
+                                    await adminOrderController
+                                        .updateOrderStatus(
+                                          orderDoc.id,
+                                          "Completed",
+                                        );
                                   },
                                   child: const Text("Proceed"),
                                 ),
@@ -271,13 +274,11 @@ class ManageOrderScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-
                   ],
                 );
               },
             ),
           );
-
         },
       ),
     );

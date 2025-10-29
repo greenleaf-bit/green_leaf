@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:green_leaf/main_screen.dart';
 
 class CartController {
   final _firestore = FirebaseFirestore.instance;
@@ -64,6 +65,11 @@ class CartController {
           content: Text("Added to cart successfully"),
           behavior: SnackBarBehavior.floating,
         ),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => CustomBottomBar()),
+        (route) => false,
       );
     } catch (e) {
       ScaffoldMessenger.of(
