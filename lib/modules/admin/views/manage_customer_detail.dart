@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/admin/controllers/customer_controller.dart';
+import 'package:green_leaf/modules/admin/views/admin_bottom_bar.dart';
 import 'package:green_leaf/modules/admin/views/admin_home_screen.dart';
 
 class ManageCustomerDetail extends StatefulWidget {
@@ -238,8 +239,7 @@ class _ManageCustomerDetailState extends State<ManageCustomerDetail> {
                                 Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        const AdminHomeScreen(),
+                                    builder: (context) => AdminBottomBar(),
                                   ),
                                   (route) =>
                                       false, // remove all previous routes
@@ -326,24 +326,38 @@ class _ManageCustomerDetailState extends State<ManageCustomerDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10,),
-          Row(children: [
-            SizedBox(width: 70,),
-            Text("Items",style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: Color(0XFF454545),
-            ),),SizedBox(width:100,),
-            Text("Quantity",style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: Color(0XFF454545),
-            ),),SizedBox(width:10,),
-            Text("Total Amount",style: GoogleFonts.inter(
-              fontSize: 10,
-              fontWeight: FontWeight.w500,
-              color: Color(0XFF454545),
-            ),),],),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              SizedBox(width: 70),
+              Text(
+                "Items",
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0XFF454545),
+                ),
+              ),
+              SizedBox(width: 100),
+              Text(
+                "Quantity",
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0XFF454545),
+                ),
+              ),
+              SizedBox(width: 10),
+              Text(
+                "Total Amount",
+                style: GoogleFonts.inter(
+                  fontSize: 10,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0XFF454545),
+                ),
+              ),
+            ],
+          ),
           // 🟢 Order Items
           Column(
             children: items.map((item) {

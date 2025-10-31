@@ -139,83 +139,91 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
                     topRight: Radius.circular(50),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(30),
-                  child: Column(
-                    children: [
-                      _buildRowField(
-                        "Product Name",
-                        _nameController,
-                        'Enter Name',
-                      ),
-                      const Divider(thickness: 1),
-                      const SizedBox(height: 20),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Column(
+                      children: [
+                        _buildRowField(
+                          "Product Name",
+                          _nameController,
+                          'Enter Name',
+                        ),
+                        const Divider(thickness: 1),
+                        const SizedBox(height: 20),
 
-                      _buildRowField(
-                        "Product Price",
-                        _priceController,
-                        'Enter Price',
-                        keyboardType: TextInputType.number,
-                        suffix: "OMR",
-                      ),
-                      const Divider(thickness: 1),
-                      const SizedBox(height: 20),
+                        _buildRowField(
+                          "Product Price",
+                          _priceController,
+                          'Enter Price',
+                          keyboardType: TextInputType.number,
+                          suffix: "OMR",
+                        ),
+                        const Divider(thickness: 1),
+                        const SizedBox(height: 20),
 
-                      _buildRowField(
-                        "Product Type",
-                        _typeController,
-                        'Enter Type',
-                      ),
-                      const Divider(thickness: 1),
-                      const SizedBox(height: 10),
+                        _buildRowField(
+                          "Product Type",
+                          _typeController,
+                          'Enter Type',
+                        ),
+                        const Divider(thickness: 1),
+                        const SizedBox(height: 10),
 
-                      TextFormField(
-                        controller: _descriptionController,
-                        validator: (value) => value == null || value.isEmpty
-                            ? 'Please enter product description'
-                            : null,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          border: const UnderlineInputBorder(),
-                          labelText: 'Product Description',
-                          labelStyle: GoogleFonts.inter(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0XFF39571E).withOpacity(0.8),
+                        TextFormField(
+                          controller: _descriptionController,
+                          validator: (value) {
+                            if (value!.length < 3 || value.length > 14) {
+                              return "Description can't be Less than 3 & more than14 characters";
+                            }
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter product description';
+                            }
+                          },
+                          maxLines: null,
+                          decoration: InputDecoration(
+                            errorMaxLines: 2,
+                            border: const UnderlineInputBorder(),
+                            labelText: 'Product Description',
+                            labelStyle: GoogleFonts.inter(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0XFF39571E).withOpacity(0.8),
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 60),
+                        const SizedBox(height: 60),
 
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 12,
-                              horizontal: 15,
+                        SizedBox(
+                          width: 300,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 12,
+                                horizontal: 15,
+                              ),
+                              backgroundColor: const Color(0XFF428DFF),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
                             ),
-                            backgroundColor: const Color(0XFF428DFF),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          onPressed: _updateProduct,
-                          child: isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                )
-                              : Text(
-                                  'Update Product',
-                                  style: GoogleFonts.inter(
+                            onPressed: _updateProduct,
+                            child: isLoading
+                                ? const CircularProgressIndicator(
                                     color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
+                                  )
+                                : Text(
+                                    'Update Product',
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                ),
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -229,6 +237,7 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
   Widget _buildRowField(
     String label,
     TextEditingController controller,
+
     String hint, {
     TextInputType keyboardType = TextInputType.text,
     String? suffix,
@@ -246,25 +255,70 @@ class _UpdateProductScreenState extends State<UpdateProductScreen> {
         ),
         SizedBox(
           width: 150,
-          height: 30,
-          child: TextFormField(
-            controller: controller,
-            keyboardType: keyboardType,
-            validator: (value) =>
-                value == null || value.isEmpty ? 'Required' : null,
-            decoration: InputDecoration(
-              suffixText: suffix,
-              border: InputBorder.none,
-              hintText: hint,
-              hintStyle: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: const Color(0XFF39571E),
+          child: Column(
+            children: [
+              TextFormField(
+                controller: controller,
+                keyboardType: keyboardType,
+                validator: (value) => _validateField(label, value),
+
+                decoration: InputDecoration(
+                  errorMaxLines: 5,
+                  suffixText: suffix,
+                  border: InputBorder.none,
+                  hintText: hint,
+                  hintStyle: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: const Color(0XFF39571E),
+                  ),
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ],
     );
   }
+}
+
+String? _validateField(String label, String? value) {
+  if (label == 'Product Name') {
+    if (value == null || value.isEmpty) {
+      return 'Please Enter Product Name';
+    }
+    if (value!.length < 3 || value.length > 14) {
+      return "Product Name must be More than 3 & less than 14 characters";
+    }
+    if (!RegExp(r'^[A-Za-z\s]+$').hasMatch(value.trim())) {
+      return 'Product Name Should not Contain Numbers, Symbols';
+    }
+    return null;
+  }
+  if (label == 'Product Price') {
+    if (value == '0' || value!.length > 7) {
+      return "Price can't be zero or More than 6 digits Format:[3000.000]";
+    }
+    if (value == null || value.isEmpty) {
+      return 'Please enter product price';
+    }
+    if (double.tryParse(value) == null) {
+      return 'Please enter a valid number';
+    }
+  }
+
+  if (label == 'Product Name' && value!.length < 3) {
+    return 'Product name must be at least 3 characters long';
+  }
+
+  if (label == 'Product Type') {
+    if (value!.length < 3 || value.length > 14) {
+      return "Type can't be Less than 3 & more than14 characters";
+    }
+    if (value == null || value.isEmpty) {
+      return 'Please enter product type';
+    }
+  }
+
+  return null; // ✅ No validation error
 }

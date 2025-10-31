@@ -4,11 +4,6 @@ import 'package:green_leaf/modules/admin/views/manage_customers.dart';
 import 'package:green_leaf/modules/admin/views/manage_orders.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
 import 'package:green_leaf/modules/admin/views/manage_report_screen.dart';
-import 'package:green_leaf/modules/user/views/cart_screen.dart';
-import 'package:green_leaf/modules/user/views/home_screen.dart';
-import 'package:green_leaf/modules/user/views/order_screen.dart';
-import 'package:green_leaf/modules/user/views/profile_screen.dart';
-import 'package:green_leaf/modules/user/views/scanner_screen.dart';
 
 class AdminBottomBar extends StatefulWidget {
   @override
@@ -18,13 +13,18 @@ class AdminBottomBar extends StatefulWidget {
 class _AdminBottomBarState extends State<AdminBottomBar> {
   int _selectedIndex = 0;
 
-  final List<Widget> _screens = [
-    AdminHomeScreen(),
-    ManageProducts(),
-    ManageOrderScreen(),
-  ManageCustomers(),
-    ManageReportsScreen(),
-  ];
+  final List<Widget> _screens = [];
+  @override
+  void initState() {
+    super.initState();
+    _screens.addAll([
+      AdminHomeScreen(onTabChange: _onItemTapped),
+      ManageProducts(),
+      ManageOrderScreen(),
+      ManageCustomers(),
+      ManageReportsScreen(),
+    ]);
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -61,36 +61,6 @@ class _AdminBottomBarState extends State<AdminBottomBar> {
       resizeToAvoidBottomInset: false,
       extendBody: true,
       body: _screens[_selectedIndex],
-
-      // floatingActionButton: Container(
-      //   margin: EdgeInsets.only(top: 30),
-      //   height: 50,
-      //   width: 50,
-      //   decoration: BoxDecoration(
-      //     shape: BoxShape.circle,
-      //     gradient: LinearGradient(
-      //       colors: [Colors.greenAccent, Colors.green],
-      //       begin: Alignment.topLeft,
-      //       end: Alignment.bottomRight,
-      //     ),
-      //     boxShadow: [
-      //       BoxShadow(
-      //         color: Colors.black26,
-      //         blurRadius: 6,
-      //         offset: Offset(0, 4),
-      //       ),
-      //     ],
-      //   ),
-      //   child: FloatingActionButton(
-      //     onPressed: () {
-      //       _onItemTapped(2);
-      //     },
-      //     backgroundColor: Colors.transparent,
-      //     elevation: 0,
-      //     child: Icon(Icons.qr_code_scanner, size: 32),
-      //   ),
-      // ),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       bottomNavigationBar: BottomAppBar(
         color: Colors.transparent,

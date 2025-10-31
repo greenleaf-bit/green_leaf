@@ -147,9 +147,9 @@ class AuthController {
         );
       }
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Login Failed: ${e.message}")));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("The Supplied Credentials are incorrect")),
+      );
     }
   }
 
@@ -230,7 +230,7 @@ class AuthController {
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text("Password updated successfully"),
+          content: Text("Password Changed successfully"),
           behavior: SnackBarBehavior.floating,
         ),
       );

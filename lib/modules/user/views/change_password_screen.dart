@@ -2,14 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/modules/user/controllers/auth_controller.dart';
 
-class ChangePasswordScreen extends StatelessWidget {
+class ChangePasswordScreen extends StatefulWidget {
   ChangePasswordScreen({super.key});
 
+  @override
+  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
+}
+
+class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController _currentController = TextEditingController();
+
   final TextEditingController _newController = TextEditingController();
+
   final TextEditingController _confirmController = TextEditingController();
 
   final AuthController _authController = AuthController();
+
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -44,65 +55,118 @@ class ChangePasswordScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          children: [
-            const SizedBox(height: 60),
-            TextFormField(
-              controller: _currentController,
-              obscureText: true,
-              decoration: inputDecoration("Current Password"),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _newController,
-              obscureText: true,
-              decoration: inputDecoration("New Password"),
-            ),
-            const SizedBox(height: 20),
-            TextFormField(
-              controller: _confirmController,
-              obscureText: true,
-              decoration: inputDecoration("Confirm New Password"),
-            ),
-            const SizedBox(height: 60),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0XFF5C8B40),
-                minimumSize: const Size(double.infinity, 54),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: [
+                const SizedBox(height: 60),
+                TextFormField(
+                  controller: _currentController,
+                  obscureText: true,
+                  decoration: inputDecoration("Current Password"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Current Password";
+                    }
+                    return null;
+                  },
                 ),
-              ),
-              onPressed: () {
-                final current = _currentController.text.trim();
-                final newPass = _newController.text.trim();
-                final confirm = _confirmController.text.trim();
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _newController,
+                  obscureText: true,
 
-                if (newPass != confirm) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("New passwords do not match")),
-                  );
-                  return;
-                }
+                  decoration: inputDecoration("New Password"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter New Password";
+                    }
+                    if (value.length < 8) {
+                      return 'Password must be more than 8 characters long';
+                    }
+                    // Regex check for letters, numbers, and special characters
+                    bool hasLetter = value.contains(RegExp(r'[A-Za-z]'));
+                    bool hasNumber = value.contains(RegExp(r'[0-9]'));
+                    bool hasSpecial = value.contains(
+                      RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
+                    );
 
-                _authController.changePassword(
-                  currentPassword: current,
-                  newPassword: newPass,
-                  context: context,
-                );
-              },
-              child: Text(
-                'Submit',
-                style: GoogleFonts.inter(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w700,
-                  fontSize: 20,
+                    if (!hasLetter || !hasNumber || !hasSpecial) {
+                      return 'Password must be combination of  letters, numbers, and special characters';
+                    }
+                    return null;
+                  },
                 ),
-              ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: _confirmController,
+                  obscureText: true,
+                  decoration: inputDecoration("Confirm New Password"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "Please Enter Confirm New Password";
+                    }
+                    final newPass = _newController.text.trim();
+
+                    if (newPass != value) {
+                      return 'Password does not match';
+                    }
+                  },
+                ),
+                const SizedBox(height: 60),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0XFF5C8B40),
+                    minimumSize: const Size(double.infinity, 54),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (_formKey.currentState == null ||
+                        !_formKey.currentState!.validate()) {
+                      return;
+                    }
+
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    final current = _currentController.text.trim();
+                    final newPass = _confirmController.text.trim();
+
+                    try {
+                      await _authController.changePassword(
+                        currentPassword: current,
+                        newPassword: newPass,
+                        context: context,
+                      );
+                    } finally {
+                      if (mounted) {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    }
+                  },
+
+                  child: isLoading
+                      ? CircularProgressIndicator(color: Colors.white)
+                      : Text(
+                          'Submit',
+                          style: GoogleFonts.inter(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 20,
+                          ),
+                        ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -110,10 +174,12 @@ class ChangePasswordScreen extends StatelessWidget {
 
   InputDecoration inputDecoration(String label) {
     return InputDecoration(
+      errorMaxLines: 2,
       labelText: label,
       labelStyle: GoogleFonts.inter(
         color: const Color(0XFF476C2F),
         fontSize: 16,
+
         fontWeight: FontWeight.w500,
       ),
       border: UnderlineInputBorder(

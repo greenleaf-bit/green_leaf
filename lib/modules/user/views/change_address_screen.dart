@@ -253,6 +253,9 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
 
           // Way Number validation (numeric only)
           if (label == "Way Number") {
+            if (value == '0') {
+              return "Way Number can't be Zero";
+            }
             if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
               return "$label must be numeric";
             }
@@ -261,6 +264,9 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
             }
           }
           if (label == "Street Number") {
+            if (value == '0') {
+              return "Street Number can't be Zero";
+            }
             if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
               return "$label must be numeric";
             }
@@ -273,7 +279,9 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
           if (label == "House Number") {
             // Remove spaces just in case
             String val = value.replaceAll(' ', '');
-
+            if (val == '0') {
+              return "House Number can't be Zero";
+            }
             // Check total length 1-6
             if (val.length < 1 || val.length > 6) {
               return "House Number must be 1-6 characters long";
@@ -283,10 +291,10 @@ class _ChangeAddressScreenState extends State<ChangeAddressScreen> {
             bool digitsOnly = RegExp(r'^\d{2,6}$').hasMatch(val);
 
             // Regex for number + exactly 2 letters at the end (e.g., 12AB)
-            bool numberWith2Letters = RegExp(r'^\d+[A-Z]{2}$').hasMatch(val);
+            bool numberWith2Letters = RegExp(r'^\d+[A-Z]{1}$').hasMatch(val);
 
             if (!digitsOnly && !numberWith2Letters) {
-              return "House Number must be 2-6 digits or a number with 2 letters (A-Z)";
+              return "House Number must be 2-6 digits or a number with 1 letters (A-Z)";
             }
           }
 

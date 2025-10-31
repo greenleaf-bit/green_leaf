@@ -8,7 +8,8 @@ import 'package:green_leaf/modules/user/views/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AdminHomeScreen extends StatelessWidget {
-  const AdminHomeScreen({super.key});
+  final Function(int) onTabChange;
+  const AdminHomeScreen({super.key, required this.onTabChange});
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class AdminHomeScreen extends StatelessWidget {
                       'is_logged_in',
                       false,
                     ); // 🔹 session off
-                    await prefs.setBool('fingerprint_enabled', false);
+                    // await prefs.setBool('fingerprint_enabled', false);
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
@@ -83,12 +84,8 @@ class AdminHomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ManageProducts()),
-                    );
-                  },
+                  onTap: () => onTabChange(1),
+
                   child: Container(
                     height: 160,
                     width: 155,
@@ -122,14 +119,8 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ManageOrderScreen(),
-                      ),
-                    );
-                  },
+                  onTap: () => onTabChange(2),
+
                   child: Container(
                     height: 160,
                     width: 155,
@@ -170,14 +161,7 @@ class AdminHomeScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ManageCustomers(),
-                      ),
-                    );
-                  },
+                  onTap: () => onTabChange(3),
                   child: Container(
                     height: 160,
                     width: 155,
@@ -211,14 +195,7 @@ class AdminHomeScreen extends StatelessWidget {
                   ),
                 ),
                 InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ManageReportsScreen(),
-                      ),
-                    );
-                  },
+                  onTap: () => onTabChange(4),
                   child: Container(
                     height: 160,
                     width: 155,

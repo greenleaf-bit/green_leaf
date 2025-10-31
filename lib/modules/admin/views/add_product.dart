@@ -124,230 +124,260 @@ class _AddProductState extends State<AddProduct> {
                     topRight: Radius.circular(50),
                   ),
                 ),
-                child: Padding(
-                  padding: EdgeInsets.all(30),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Product Name",
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0XFF39571E).withOpacity(0.8),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 150,
-                            height: 30,
-                            child: TextFormField(
-                              controller: _nameController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter product name';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 0,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                hintText: 'Enter Name',
-
-                                hintStyle: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0XFF39571E),
-                                ),
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product Name",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0XFF39571E).withOpacity(0.8),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        thickness: 1,
-                        color: Color(0XFF3B6C1E).withOpacity(0.6),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Product Price",
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0XFF39571E).withOpacity(0.8),
-                            ),
-                          ),
-                          Spacer(),
-                          SizedBox(
-                            width: 150,
-                            height: 30,
-                            child: TextFormField(
-                              controller: _priceController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter product price';
-                                }
-                                if (double.tryParse(value) == null) {
-                                  return 'Please enter a valid number';
-                                }
-                                return null;
-                              },
-                              keyboardType: TextInputType.number,
-                              decoration: InputDecoration(
-                                suffixText: "OMR",
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0,
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                controller: _nameController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please Enter Product Name';
+                                  }
+                                  if (value!.length < 3 || value.length > 14) {
+                                    return "Product Name must be More than 3 & less than 14 characters";
+                                  }
+                                  if (!RegExp(
+                                    r'^[A-Za-z\s]+$',
+                                  ).hasMatch(value.trim())) {
+                                    return 'Product Name Should not Contain Numbers, Symbols';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  errorMaxLines: 3,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0,
+                                    horizontal: 0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: 'Enter Name',
 
-                                  horizontal: 0,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                hintText: 'Enter Price',
-
-                                hintStyle: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0XFF39571E),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        thickness: 1,
-                        color: Color(0XFF3B6C1E).withOpacity(0.6),
-                      ),
-                      SizedBox(height: 20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "Product Type",
-                            style: GoogleFonts.inter(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0XFF39571E).withOpacity(0.8),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 150,
-                            height: 30,
-
-                            child: TextFormField(
-                              controller: _typeController,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter product type';
-                                }
-                                return null;
-                              },
-                              decoration: InputDecoration(
-                                contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 0,
-                                ),
-                                border: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                ),
-                                hintText: 'Enter Type',
-
-                                hintStyle: GoogleFonts.inter(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0XFF39571E),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Divider(
-                        thickness: 1,
-                        color: Color(0XFF3B6C1E).withOpacity(0.6),
-                      ),
-                      SizedBox(height: 10),
-                      SizedBox(
-                        child: TextFormField(
-                          controller: _descriptionController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter product description';
-                            }
-                            return null;
-                          },
-                          maxLines: null,
-                          keyboardType: TextInputType.multiline,
-                          decoration: InputDecoration(
-                            border: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0XFF3B6C1E).withOpacity(0.6),
-                              ),
-                            ),
-                            enabledBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0XFF3B6C1E).withOpacity(0.6),
-                              ),
-                            ),
-                            focusedBorder: UnderlineInputBorder(
-                              borderSide: BorderSide(
-                                color: Color(0XFF3B6C1E).withOpacity(0.6),
-                              ),
-                            ),
-                            labelText: 'Product Description',
-
-                            labelStyle: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0XFF39571E).withOpacity(0.8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 60),
-                      SizedBox(
-                        width: 300,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            padding: EdgeInsets.only(
-                              top: 10,
-                              bottom: 10,
-                              left: 15,
-                              right: 15,
-                            ),
-                            backgroundColor: Color(0XFF659746),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                          ),
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _addProduct();
-                            }
-                          },
-                          child: isLoading
-                              ? CircularProgressIndicator(color: Colors.white)
-                              : Text(
-                                  'Add Product',
-                                  style: GoogleFonts.inter(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 14,
                                     fontWeight: FontWeight.w500,
+                                    color: Color(0XFF39571E),
                                   ),
                                 ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        Divider(
+                          thickness: 1,
+                          color: Color(0XFF3B6C1E).withOpacity(0.6),
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product Price",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0XFF39571E).withOpacity(0.8),
+                              ),
+                            ),
+                            Spacer(),
+                            SizedBox(
+                              width: 150,
+                              child: TextFormField(
+                                controller: _priceController,
+                                validator: (value) {
+                                  if (value == '0' || value!.length > 7) {
+                                    return "Price can't be zero or More than 6 digits Format:[3000.000]";
+                                  }
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter product price';
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'Please enter a valid number';
+                                  }
+
+                                  return null;
+                                },
+                                keyboardType: TextInputType.number,
+                                decoration: InputDecoration(
+                                  errorMaxLines: 3,
+                                  suffixText: "OMR",
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0,
+
+                                    horizontal: 0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: 'Enter Price',
+
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0XFF39571E),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(
+                          thickness: 1,
+                          color: Color(0XFF3B6C1E).withOpacity(0.6),
+                        ),
+                        SizedBox(height: 20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Product Type",
+                              style: GoogleFonts.inter(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0XFF39571E).withOpacity(0.8),
+                              ),
+                            ),
+                            SizedBox(
+                              width: 150,
+                              height: 30,
+
+                              child: TextFormField(
+                                controller: _typeController,
+                                validator: (value) {
+                                  if (value!.length < 3 || value.length > 14) {
+                                    return "Type can't be Less than 3 & more than14 characters";
+                                  }
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter product type';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  errorMaxLines: 3,
+                                  contentPadding: EdgeInsets.symmetric(
+                                    vertical: 0,
+                                    horizontal: 0,
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  hintText: 'Enter Type',
+
+                                  hintStyle: GoogleFonts.inter(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0XFF39571E),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Divider(
+                          thickness: 1,
+                          color: Color(0XFF3B6C1E).withOpacity(0.6),
+                        ),
+                        SizedBox(height: 10),
+                        SizedBox(
+                          child: TextFormField(
+                            controller: _descriptionController,
+                            validator: (value) {
+                              if (value!.length < 3 || value.length > 14) {
+                                return "Description can't be Less than 3 & more than14 characters";
+                              }
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter product description';
+                              }
+                              return null;
+                            },
+                            maxLines: null,
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                              errorMaxLines: 3,
+                              border: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0XFF3B6C1E).withOpacity(0.6),
+                                ),
+                              ),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0XFF3B6C1E).withOpacity(0.6),
+                                ),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Color(0XFF3B6C1E).withOpacity(0.6),
+                                ),
+                              ),
+                              labelText: 'Product Description',
+
+                              labelStyle: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0XFF39571E).withOpacity(0.8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 20),
+                        SizedBox(
+                          width: 300,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.only(
+                                top: 10,
+                                bottom: 10,
+                                left: 15,
+                                right: 15,
+                              ),
+                              backgroundColor: Color(0XFF659746),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (_selectedImage == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text("Please select an image"),
+                                  ),
+                                );
+                              }
+                              if (_formKey.currentState!.validate() &&
+                                  _selectedImage != null) {
+                                _addProduct();
+                              }
+                            },
+                            child: isLoading
+                                ? CircularProgressIndicator(color: Colors.white)
+                                : Text(
+                                    'Add Product',
+                                    style: GoogleFonts.inter(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

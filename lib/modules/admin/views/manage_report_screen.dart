@@ -79,14 +79,14 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
       ),
       body: Column(
         children: [
-          SizedBox(height: 100),
+          SizedBox(height: 70),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               Container(
                 width: 170,
                 padding: EdgeInsets.all(12),
-                height: 190,
+                height: 150,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -100,7 +100,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                             "$totalAcceptedOrders",
                             textAlign: TextAlign.center,
                             style: GoogleFonts.inter(
-                              fontSize: 60,
+                              fontSize: 35,
                               letterSpacing: 2,
                               color: Color(0XFF456B2E),
                               fontWeight: FontWeight.w500,
@@ -122,7 +122,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
               ),
               Container(
                 padding: EdgeInsets.all(12),
-                height: 190,
+                height: 150,
                 width: 170,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -145,7 +145,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                                   style: GoogleFonts.inter(
                                     letterSpacing: 2,
                                     color: Color(0XFF456B2E),
-                                    fontSize: 60,
+                                    fontSize: 35,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -196,7 +196,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                 child: Container(
                   width: 170,
                   padding: EdgeInsets.all(12),
-                  height: 190,
+                  height: 150,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -210,7 +210,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                               "$totalFeedbacks",
                               textAlign: TextAlign.center,
                               style: GoogleFonts.inter(
-                                fontSize: 60,
+                                fontSize: 35,
                                 letterSpacing: 2,
                                 color: Color(0XFF456B2E),
                                 fontWeight: FontWeight.w500,
@@ -244,7 +244,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                 },
                 child: Container(
                   padding: EdgeInsets.all(12),
-                  height: 190,
+                  height: 150,
                   width: 170,
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -261,7 +261,7 @@ class _ManageReportsScreenState extends State<ManageReportsScreen> {
                               style: GoogleFonts.inter(
                                 letterSpacing: 2,
                                 color: Color(0XFF456B2E),
-                                fontSize: 60,
+                                fontSize: 35,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),

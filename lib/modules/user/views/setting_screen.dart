@@ -170,7 +170,7 @@ class _SettingScreenState extends State<SettingScreen> {
               onPressed: () async {
                 final prefs = await SharedPreferences.getInstance();
                 await prefs.setBool('is_logged_in', false); // 🔹 session off
-                await prefs.setBool('fingerprint_enabled', false);
+                // await prefs.setBool('fingerprint_enabled', false);
 
                 Navigator.pushAndRemoveUntil(
                   context,

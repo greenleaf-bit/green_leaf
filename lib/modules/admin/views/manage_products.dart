@@ -61,7 +61,7 @@ class _ManageProductsState extends State<ManageProducts> {
                       'is_logged_in',
                       false,
                     ); // 🔹 session off
-                    await prefs.setBool('fingerprint_enabled', false);
+                    //   await prefs.setBool('fingerprint_enabled', false);
                     Navigator.pushAndRemoveUntil(
                       context,
                       MaterialPageRoute(
