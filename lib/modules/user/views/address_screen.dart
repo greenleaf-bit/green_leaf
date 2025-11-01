@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/core/utils/validators.dart';
 import 'package:green_leaf/modules/user/controllers/order_controller.dart';
 import 'package:green_leaf/modules/user/views/payment_screen.dart';
 
@@ -260,85 +261,7 @@ class _AddressScreenState extends State<AddressScreen> {
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
-        validator: (value) {
-          if (value == null || value.isEmpty) return "Enter $label";
-
-          // Phone number validation
-          if (label == "Phone Number") {
-            // Remove spaces just in case
-            String val = value.replaceAll(' ', '');
-
-            // Check length exactly 8
-            if (val.length != 8) {
-              return "Phone number must be 8 digits";
-            }
-
-            // Check starts with 9 or 7 and all digits
-            if (!RegExp(r'^[79][0-9]{7}$').hasMatch(val)) {
-              return "Phone number must start with 9 or 7 and contain only digits";
-            }
-          }
-
-          // Way Number validation (numeric only)
-          if (label == "Way Number") {
-            if (value == '0') {
-              return "Way Number can't be Zero";
-            }
-            if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-              return "$label must be numeric";
-            }
-            if (value.length < 1 || value.length > 6) {
-              return "Way Number Accepts Only Numbers Length 1-6";
-            }
-          }
-          if (label == "Street Number") {
-            if (value == '0') {
-              return "Street Number can't be Zero";
-            }
-            if (!RegExp(r'^[0-9]+$').hasMatch(value)) {
-              return "$label must be numeric";
-            }
-            if (value.length < 1 || value.length > 6) {
-              return "Street Number Accepts Only Numbers Length 1-6";
-            }
-          }
-
-          // House Number or Street Number validation (optional numeric check)
-          if (label == "House Number") {
-            if (value == '0') {
-              return "House Number can't be Zero";
-            }
-            // Remove spaces just in case
-            String val = value.replaceAll(' ', '');
-
-            // Check total length 1-6
-            if (val.length < 1 || val.length > 6) {
-              return "House Number must be 1-6 characters long";
-            }
-
-            // Regex for 2-6 digits
-            bool digitsOnly = RegExp(r'^\d{2,6}$').hasMatch(val);
-
-            // Regex for number + exactly 2 letters at the end (e.g., 12AB)
-            bool numberWith2Letters = RegExp(r'^\d+[A-Z]{1}$').hasMatch(val);
-
-            if (!digitsOnly && !numberWith2Letters) {
-              return "House Number must be 2-6 digits or a number with 1 letters (A-Z)";
-            }
-          }
-
-          // Area validation (letters only)
-          if (label == "Area") {
-            if (value.length < 3 || value.length > 30) {
-              return "Area must be 3-30 characters";
-            }
-            if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-              return "Area cannot contain numbers or special characters";
-            }
-          }
-
-          return null; // validation passed
-        },
+        validator: (value) => AddressScreenValidators.validate(label, value),
         decoration: InputDecoration(
           labelText: label,
           errorMaxLines: 2,

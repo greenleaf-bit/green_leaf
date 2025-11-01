@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/core/utils/custom_textfield.dart';
+import 'package:green_leaf/core/utils/validators.dart';
 import 'package:green_leaf/modules/user/controllers/auth_controller.dart';
 import 'package:green_leaf/modules/user/views/login_screen.dart';
 
@@ -82,41 +83,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: fullnameController,
                   hintText: "Full Name",
                   prefixIcon: Icons.person,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Full Name';
-                    }
-                    if (value.length < 3) {
-                      return 'Name Should Be at Least 3 Characters ';
-                    }
-                    if (value.length > 30) {
-                      return 'Name should not exceed 30 characters ';
-                    }
-                    if (!RegExp(r'^[a-zA-Z\s]+$').hasMatch(value)) {
-                      return 'Name should contain only alphabet characters ';
-                    }
-                    return null;
-                  },
+                  validator: RegisterValidators.validateFullName,
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
                   controller: emailController,
                   hintText: "Email",
                   prefixIcon: Icons.email,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email address';
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    }
-                    if (value.length > 40) {
-                      return 'Email address is too long (max 40 characters)';
-                    }
-                    return null;
-                  },
+                  validator: RegisterValidators.validateEmail,
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
@@ -124,26 +98,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   hintText: "Password",
                   prefixIcon: Icons.lock,
                   obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password';
-                    }
-                    if (value.length < 8) {
-                      return 'Password must be more than 8 characters long';
-                    }
-                    // Regex check for letters, numbers, and special characters
-                    bool hasLetter = value.contains(RegExp(r'[A-Za-z]'));
-                    bool hasNumber = value.contains(RegExp(r'[0-9]'));
-                    bool hasSpecial = value.contains(
-                      RegExp(r'[!@#$%^&*(),.?":{}|<>]'),
-                    );
-
-                    if (!hasLetter || !hasNumber || !hasSpecial) {
-                      return 'Password must include letters, numbers, and special characters';
-                    }
-
-                    return null;
-                  },
+                  validator: RegisterValidators.validatePassword,
                   onChanged: (value) {
                     _password = value;
                   },
@@ -152,17 +107,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 CustomTextField(
                   controller: _confirmPasswordController,
                   hintText: "Confirm Password",
+
                   prefixIcon: Icons.lock,
                   obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your confirm password';
-                    }
-                    if (value != passwordController.text) {
-                      return 'Passwords do not match';
-                    }
-                    return null;
-                  },
+                  validator: (value) =>
+                      RegisterValidators.validateConfirmPassword(
+                        value,
+                        passwordController.text,
+                      ),
                 ),
 
                 SizedBox(height: 20),

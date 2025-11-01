@@ -85,7 +85,7 @@ class AccountInfo extends StatelessWidget {
           final data = snapshot.data!.data() as Map<String, dynamic>;
           final email = data["email"] ?? "";
           final fullname = data["fullname"] ?? "";
-          final address = data["address"] ?? "No Address Added";
+          final address = data["address"] ?? {};
 
           return Padding(
             padding: const EdgeInsets.only(left: 30, right: 30, top: 40),
@@ -95,7 +95,26 @@ class AccountInfo extends StatelessWidget {
                 divider(),
                 rowItem("Full Name", fullname),
                 divider(),
-                rowItem("Your Address", address, isAddress: true),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Your Address",
+                      style: GoogleFonts.inter(
+                        color: Color(0XFF39571E),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Spacer(),
+                    Expanded(
+                      flex: 2,
+                      child: addressList(
+                        address,
+                      ), // <-- yeh String nahi hai, Map handle karega
+                    ),
+                  ],
+                ),
                 divider(),
                 SizedBox(height: 100),
                 ElevatedButton(
@@ -123,6 +142,47 @@ class AccountInfo extends StatelessWidget {
             ),
           );
         },
+      ),
+    );
+  }
+
+  //address
+  Widget addressList(Map<String, dynamic> address) {
+    if (address.isEmpty) {
+      return Text(
+        "No Address Added",
+        style: GoogleFonts.inter(
+          color: Color(0XFF39571E),
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+        textAlign: TextAlign.right,
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (address["area"] != null) textLine("Area", address["area"]),
+        if (address["house"] != null) textLine("House", address["house"]),
+        if (address["street"] != null) textLine("Street", address["street"]),
+        if (address["way"] != null) textLine("Way", address["way"]),
+        if (address["phone"] != null) textLine("Phone", address["phone"]),
+      ],
+    );
+  }
+
+  Widget textLine(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4),
+      child: Text(
+        "$title: $value",
+        style: GoogleFonts.inter(
+          color: Color(0XFF39571E),
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+        textAlign: TextAlign.right,
       ),
     );
   }

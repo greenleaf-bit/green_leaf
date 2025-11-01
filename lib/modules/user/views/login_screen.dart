@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:green_leaf/core/utils/custom_textfield.dart';
+import 'package:green_leaf/core/utils/validators.dart';
 import 'package:green_leaf/modules/user/controllers/auth_controller.dart';
 import 'package:green_leaf/modules/user/views/forgot_password_screen.dart';
 import 'package:green_leaf/modules/user/views/register_screen.dart';
@@ -125,17 +126,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: emailController,
                   hintText: "Email",
                   prefixIcon: Icons.email,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email address';
-                    }
-                    if (!RegExp(
-                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                    ).hasMatch(value)) {
-                      return 'Please enter a valid email address';
-                    }
-                    return null;
-                  },
+                  validator: LoginValidators.validateEmail,
                 ),
                 SizedBox(height: 20),
                 CustomTextField(
@@ -143,12 +134,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   controller: passwordController,
                   hintText: "Password",
                   prefixIcon: Icons.person,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your Password';
-                    }
-                    return null;
-                  },
+                  validator: LoginValidators.validatePassword,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(right: 19),

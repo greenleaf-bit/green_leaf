@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:green_leaf/core/utils/validators.dart';
 import 'package:green_leaf/modules/admin/controllers/product_controller.dart';
 import 'package:green_leaf/modules/admin/views/admin_bottom_bar.dart';
 import 'package:green_leaf/modules/admin/views/manage_products.dart';
@@ -144,20 +145,8 @@ class _AddProductState extends State<AddProduct> {
                               width: 150,
                               child: TextFormField(
                                 controller: _nameController,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please Enter Product Name';
-                                  }
-                                  if (value!.length < 3 || value.length > 14) {
-                                    return "Product Name must be More than 3 & less than 14 characters";
-                                  }
-                                  if (!RegExp(
-                                    r'^[A-Za-z\s]+$',
-                                  ).hasMatch(value.trim())) {
-                                    return 'Product Name Should not Contain Numbers, Symbols';
-                                  }
-                                  return null;
-                                },
+                                validator:
+                                    AddProductValidators.validateProductName,
                                 decoration: InputDecoration(
                                   errorMaxLines: 3,
                                   contentPadding: EdgeInsets.symmetric(
@@ -200,19 +189,8 @@ class _AddProductState extends State<AddProduct> {
                               width: 150,
                               child: TextFormField(
                                 controller: _priceController,
-                                validator: (value) {
-                                  if (value == '0' || value!.length > 7) {
-                                    return "Price can't be zero or More than 6 digits Format:[3000.000]";
-                                  }
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter product price';
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'Please enter a valid number';
-                                  }
-
-                                  return null;
-                                },
+                                validator:
+                                    AddProductValidators.validateProductPrice,
                                 keyboardType: TextInputType.number,
                                 decoration: InputDecoration(
                                   errorMaxLines: 3,
@@ -259,15 +237,8 @@ class _AddProductState extends State<AddProduct> {
 
                               child: TextFormField(
                                 controller: _typeController,
-                                validator: (value) {
-                                  if (value!.length < 3 || value.length > 14) {
-                                    return "Type can't be Less than 3 & more than14 characters";
-                                  }
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter product type';
-                                  }
-                                  return null;
-                                },
+                                validator:
+                                    AddProductValidators.validateProductType,
                                 decoration: InputDecoration(
                                   errorMaxLines: 3,
                                   contentPadding: EdgeInsets.symmetric(
@@ -297,15 +268,8 @@ class _AddProductState extends State<AddProduct> {
                         SizedBox(
                           child: TextFormField(
                             controller: _descriptionController,
-                            validator: (value) {
-                              if (value!.length < 3 || value.length > 14) {
-                                return "Description can't be Less than 3 & more than14 characters";
-                              }
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter product description';
-                              }
-                              return null;
-                            },
+                            validator:
+                                AddProductValidators.validateProductDescription,
                             maxLines: null,
                             keyboardType: TextInputType.multiline,
                             decoration: InputDecoration(
